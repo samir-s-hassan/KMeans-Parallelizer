@@ -1,0 +1,38 @@
+CSE 375/475 Spring 25
+HW 2 -KMeans - Addendum : GPU acceleration
+---------------------------------------------------------------------------------------------------
+
+Now that you have written a CPU parallel Kmeans you can consider parallelizing it on the GPU for
+extra credit. There are 3 options you have to parallelize on the GPU:
+
+- (2 pts) Using KM-CUDA
+- (3 pts) Parallelizing Frameworks
+- (4 pts) Handwritten kernel
+
+In either of the cases, use a large data set and compare the performance of the GPU to your
+parallel CPU code. Be able to explain why performance is the way it is (e.g., how is KM-CUDA
+parallelizing compared to your code if you choose option 1).
+
+Using KM-CUDA:
+
+KM-CUDA is a framework for executing kmeans and knn on the GPU. It can be built using CMake and
+can easily be linked into your project. It will manage everything for you, and can be called with
+a simple function in C++ (kmeans_cuda).
+The code can be downloaded from https://github.com/src-d/kmcuda/tree/master.
+
+Parallelizing Frameworks:
+
+Port your code utilizing Thrust or OpenACC. Thrust will be similar to <algorithms> or TBB, while
+OpenACC is similar to OpenMP. The code here shows examples of using Thrust
+https://github.com/sss-lehigh/SystemsTutorials/tree/main/gpus.
+
+There are explanations of how to use OpenACC across the web including here:
+https://enccs.github.io/OpenACC-CUDA-beginners/1.02_openacc-introduction/
+
+I would suggest using Thrust, but it may be easier to port to
+OpenACC if you have been using OpenMP for parallelization.
+
+Handwritten kernel:
+
+Parallelize your code manually writing a kernel. You can refer to https://docs.nvidia.com/cuda/
+or the SSS systems tutorial for examples on how to write kernels.
