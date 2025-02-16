@@ -1,9 +1,10 @@
 #!/bin/bash
 
 # Set the source file name and output executable
-SOURCE_FILE="kmeans-serial.cpp"
-EXECUTABLE="kmeans"
+SOURCE_FILE="kmeans-parallel.cpp"
+EXECUTABLE="kmeans-parallel"
 DATASET_DIR="datasets"  # Default dataset directory
+DEFAULT_DATASET="1.txt"  # Default dataset file
 
 # Load the correct GCC module
 module load gcc-11.2.0
@@ -39,12 +40,11 @@ fi
 
 # Check if dataset filename is provided as an argument
 if [ -z "$1" ]; then
-    echo "Error: No dataset file provided!"
-    echo "Usage: ./setup_kmeans.sh sample.txt"
-    exit 1
+    echo "No dataset file provided. Using default dataset: $DEFAULT_DATASET"
+    DATASET="$DATASET_DIR/$DEFAULT_DATASET"
+else
+    DATASET="$DATASET_DIR/$1"
 fi
-
-DATASET="$DATASET_DIR/$1"  # Automatically prepend "datasets/"
 
 # Check if the dataset file exists
 if [ ! -f "$DATASET" ]; then
@@ -52,10 +52,10 @@ if [ ! -f "$DATASET" ]; then
     exit 1
 fi
 
-echo "===== Running K-Means on Dataset: $DATASET ====="
+echo "===== Parallel Implementation of K-Means on: $DATASET ====="
 echo ""
 
-# Run K-Means with the provided dataset
+# Run K-Means with the selected dataset
 cat "$DATASET" | ./"$EXECUTABLE"
 
 echo "===== K-Means Execution Completed! ====="
