@@ -5,7 +5,7 @@ SOURCE_FILE="kmeans-serial.cpp"
 EXECUTABLE="kmeans"
 DATASET_DIR="datasets"  # Default dataset directory
 
-echo "===== Step 1: Load GCC 11.2.0 ====="
+# echo "===== Step 1: Load GCC 11.2.0 ====="
 
 # Load the correct GCC module
 module load gcc-11.2.0
@@ -16,21 +16,21 @@ if [[ ! "$GCC_VERSION" =~ "11.2.0" ]]; then
   echo "Error: Failed to switch to GCC 11.2.0. Current version is: $GCC_VERSION"
   exit 1
 fi
-echo "Using compiler: $GCC_VERSION"
+# echo "Using compiler: $GCC_VERSION"
 
-echo "===== Step 2: Setting Up Intel TBB ====="
+# echo "===== Step 2: Setting Up Intel TBB ====="
 
 # Navigate to the TBB environment setup directory
 cd oneapi-tbb-2022.0.0/env || { echo "Error: TBB directory not found"; exit 1; }
 
 # Source the environment variables
 source vars.sh
-echo "TBB environment configured successfully."
+# echo "TBB environment configured successfully."
 
 # Navigate back to the root directory (two levels up)
 cd ../..
 
-echo "===== Step 3: Checking and Compiling $SOURCE_FILE ====="
+# echo "===== Step 3: Checking and Compiling $SOURCE_FILE ====="
 
 # Check if the source file exists
 if [ ! -f "$SOURCE_FILE" ]; then
@@ -44,7 +44,7 @@ if [ $? -ne 0 ]; then
     echo "Compilation failed!"
     exit 1
 fi
-echo "Compilation successful! Executable: $EXECUTABLE"
+# echo "Compilation successful! Executable: $EXECUTABLE"
 
 # Check if dataset filename is provided as an argument
 if [ -z "$1" ]; then
@@ -61,9 +61,13 @@ if [ ! -f "$DATASET" ]; then
     exit 1
 fi
 
+echo ""
 echo "===== Step 4: Running K-Means on Dataset: $DATASET ====="
+echo ""
 
 # Run K-Means with the provided dataset
 cat "$DATASET" | ./"$EXECUTABLE"
 
+echo ""
 echo "===== K-Means Execution Completed! ====="
+echo ""
