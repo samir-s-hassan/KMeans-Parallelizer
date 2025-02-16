@@ -1,26 +1,26 @@
 Running K-Means Implementations on dataset: datasets/1.txt
 ===== Running kmeans-serial-fast on: datasets/1.txt =====
-Break in iteration 5
+Break in iteration 2
 
 Cluster 1
-Point 1: 1 1 
 Point 2: 1.5 2 
+Point 1: 1 1 
 Cluster values: 1.25 1.5 
 
-TOTAL EXECUTION TIME = 9
+TOTAL EXECUTION TIME = 8
 TIME PHASE 1 = 1
-TIME PHASE 2 = 7
+TIME PHASE 2 = 6
 Cluster 2
-Point 6: 4.5 5 
-Point 4: 5 7 
-Point 5: 3.5 5 
 Point 7: 3.5 4.5 
 Point 3: 3 4 
+Point 4: 5 7 
+Point 5: 3.5 5 
+Point 6: 4.5 5 
 Cluster values: 3.9 5.1 
 
-TOTAL EXECUTION TIME = 9
+TOTAL EXECUTION TIME = 8
 TIME PHASE 1 = 1
-TIME PHASE 2 = 7
+TIME PHASE 2 = 6
 ===== kmeans-serial-fast Execution Completed! =====
 
 ===== Running kmeans on: datasets/1.txt =====
