@@ -203,7 +203,7 @@ private:
 
 		// Compute distance to the **first cluster** (used as reference)
 		for (int i = 0; i < total_values; i++)
-		{	//SAMIR - Replace pow(x, 2.0) with Direct Multiplication
+		{ // SAMIR - Replace pow(x, 2.0) with Direct Multiplication
 			double diff = clusters[0].getCentralValue(i) - point.getValue(i);
 			sum += diff * diff; // Faster than pow()
 		}
