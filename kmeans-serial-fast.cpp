@@ -203,8 +203,9 @@ private:
 
 		// Compute distance to the **first cluster** (used as reference)
 		for (int i = 0; i < total_values; i++)
-		{
-			sum += pow(clusters[0].getCentralValue(i) - point.getValue(i), 2.0);
+		{	//SAMIR - Replace pow(x, 2.0) with Direct Multiplication
+			double diff = clusters[0].getCentralValue(i) - point.getValue(i);
+			sum += diff * diff; // Faster than pow()
 		}
 
 		min_dist = sqrt(sum); // Set the first cluster's distance as the minimum
