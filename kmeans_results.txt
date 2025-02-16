@@ -1,49 +1,342 @@
-Running K-Means Implementations on dataset: datasets/1.txt
-===== Running kmeans-serial-fast on: datasets/1.txt =====
-Break in iteration 2
+Running K-Means Implementations on dataset: datasets/2.txt
+===== Running kmeans-serial-fast on: datasets/2.txt =====
+Break in iteration 3
 
 Cluster 1
-Point 2: 1.5 2 
-Point 1: 1 1 
-Cluster values: 1.25 1.5 
+Point 31: 4.8 3.1 1.6 0.2 - Iris-setosa
+Point 2: 4.9 3 1.4 0.2 - Iris-setosa
+Point 3: 4.7 3.2 1.3 0.2 - Iris-setosa
+Point 4: 4.6 3.1 1.5 0.2 - Iris-setosa
+Point 7: 4.6 3.4 1.4 0.3 - Iris-setosa
+Point 8: 5 3.4 1.5 0.2 - Iris-setosa
+Point 9: 4.4 2.9 1.4 0.2 - Iris-setosa
+Point 10: 4.9 3.1 1.5 0.1 - Iris-setosa
+Point 12: 4.8 3.4 1.6 0.2 - Iris-setosa
+Point 13: 4.8 3 1.4 0.1 - Iris-setosa
+Point 14: 4.3 3 1.1 0.1 - Iris-setosa
+Point 23: 4.6 3.6 1 0.2 - Iris-setosa
+Point 24: 5.1 3.3 1.7 0.5 - Iris-setosa
+Point 25: 4.8 3.4 1.9 0.2 - Iris-setosa
+Point 26: 5 3 1.6 0.2 - Iris-setosa
+Point 27: 5 3.4 1.6 0.4 - Iris-setosa
+Point 30: 4.7 3.2 1.6 0.2 - Iris-setosa
+Point 35: 4.9 3.1 1.5 0.1 - Iris-setosa
+Point 36: 5 3.2 1.2 0.2 - Iris-setosa
+Point 38: 4.9 3.1 1.5 0.1 - Iris-setosa
+Point 39: 4.4 3 1.3 0.2 - Iris-setosa
+Point 42: 4.5 2.3 1.3 0.3 - Iris-setosa
+Point 43: 4.4 3.2 1.3 0.2 - Iris-setosa
+Point 46: 4.8 3 1.4 0.3 - Iris-setosa
+Point 48: 4.6 3.2 1.4 0.2 - Iris-setosa
+Point 50: 5 3.3 1.4 0.2 - Iris-setosa
+Point 58: 4.9 2.4 3.3 1 - Iris-versicolor
+Point 94: 5 2.3 3.3 1 - Iris-versicolor
+Point 99: 5.1 2.5 3 1.1 - Iris-versicolor
+Cluster values: 4.77586 3.07241 1.62069 0.296552 
 
-TOTAL EXECUTION TIME = 8
-TIME PHASE 1 = 1
-TIME PHASE 2 = 6
 Cluster 2
-Point 7: 3.5 4.5 
-Point 3: 3 4 
-Point 4: 5 7 
-Point 5: 3.5 5 
-Point 6: 4.5 5 
-Cluster values: 3.9 5.1 
+Point 11: 5.4 3.7 1.5 0.2 - Iris-setosa
+Point 1: 5.1 3.5 1.4 0.2 - Iris-setosa
+Point 5: 5 3.6 1.4 0.2 - Iris-setosa
+Point 6: 5.4 3.9 1.7 0.4 - Iris-setosa
+Point 15: 5.8 4 1.2 0.2 - Iris-setosa
+Point 16: 5.7 4.4 1.5 0.4 - Iris-setosa
+Point 17: 5.4 3.9 1.3 0.4 - Iris-setosa
+Point 18: 5.1 3.5 1.4 0.3 - Iris-setosa
+Point 19: 5.7 3.8 1.7 0.3 - Iris-setosa
+Point 20: 5.1 3.8 1.5 0.3 - Iris-setosa
+Point 21: 5.4 3.4 1.7 0.2 - Iris-setosa
+Point 22: 5.1 3.7 1.5 0.4 - Iris-setosa
+Point 28: 5.2 3.5 1.5 0.2 - Iris-setosa
+Point 29: 5.2 3.4 1.4 0.2 - Iris-setosa
+Point 32: 5.4 3.4 1.5 0.4 - Iris-setosa
+Point 33: 5.2 4.1 1.5 0.1 - Iris-setosa
+Point 34: 5.5 4.2 1.4 0.2 - Iris-setosa
+Point 37: 5.5 3.5 1.3 0.2 - Iris-setosa
+Point 40: 5.1 3.4 1.5 0.2 - Iris-setosa
+Point 41: 5 3.5 1.3 0.3 - Iris-setosa
+Point 45: 5.1 3.8 1.9 0.4 - Iris-setosa
+Point 47: 5.1 3.8 1.6 0.2 - Iris-setosa
+Point 49: 5.3 3.7 1.5 0.2 - Iris-setosa
+Point 44: 5 3.5 1.6 0.6 - Iris-setosa
+Cluster values: 5.28333 3.70833 1.49167 0.279167 
 
-TOTAL EXECUTION TIME = 8
-TIME PHASE 1 = 1
-TIME PHASE 2 = 6
+Cluster 3
+Point 96: 5.7 3 4.2 1.2 - Iris-versicolor
+Point 51: 7 3.2 4.7 1.4 - Iris-versicolor
+Point 52: 6.4 3.2 4.5 1.5 - Iris-versicolor
+Point 53: 6.9 3.1 4.9 1.5 - Iris-versicolor
+Point 54: 5.5 2.3 4 1.3 - Iris-versicolor
+Point 55: 6.5 2.8 4.6 1.5 - Iris-versicolor
+Point 56: 5.7 2.8 4.5 1.3 - Iris-versicolor
+Point 57: 6.3 3.3 4.7 1.6 - Iris-versicolor
+Point 59: 6.6 2.9 4.6 1.3 - Iris-versicolor
+Point 60: 5.2 2.7 3.9 1.4 - Iris-versicolor
+Point 61: 5 2 3.5 1 - Iris-versicolor
+Point 62: 5.9 3 4.2 1.5 - Iris-versicolor
+Point 63: 6 2.2 4 1 - Iris-versicolor
+Point 64: 6.1 2.9 4.7 1.4 - Iris-versicolor
+Point 65: 5.6 2.9 3.6 1.3 - Iris-versicolor
+Point 66: 6.7 3.1 4.4 1.4 - Iris-versicolor
+Point 67: 5.6 3 4.5 1.5 - Iris-versicolor
+Point 68: 5.8 2.7 4.1 1 - Iris-versicolor
+Point 69: 6.2 2.2 4.5 1.5 - Iris-versicolor
+Point 70: 5.6 2.5 3.9 1.1 - Iris-versicolor
+Point 71: 5.9 3.2 4.8 1.8 - Iris-versicolor
+Point 72: 6.1 2.8 4 1.3 - Iris-versicolor
+Point 73: 6.3 2.5 4.9 1.5 - Iris-versicolor
+Point 74: 6.1 2.8 4.7 1.2 - Iris-versicolor
+Point 75: 6.4 2.9 4.3 1.3 - Iris-versicolor
+Point 76: 6.6 3 4.4 1.4 - Iris-versicolor
+Point 77: 6.8 2.8 4.8 1.4 - Iris-versicolor
+Point 78: 6.7 3 5 1.7 - Iris-versicolor
+Point 79: 6 2.9 4.5 1.5 - Iris-versicolor
+Point 80: 5.7 2.6 3.5 1 - Iris-versicolor
+Point 81: 5.5 2.4 3.8 1.1 - Iris-versicolor
+Point 82: 5.5 2.4 3.7 1 - Iris-versicolor
+Point 83: 5.8 2.7 3.9 1.2 - Iris-versicolor
+Point 84: 6 2.7 5.1 1.6 - Iris-versicolor
+Point 85: 5.4 3 4.5 1.5 - Iris-versicolor
+Point 86: 6 3.4 4.5 1.6 - Iris-versicolor
+Point 87: 6.7 3.1 4.7 1.5 - Iris-versicolor
+Point 88: 6.3 2.3 4.4 1.3 - Iris-versicolor
+Point 89: 5.6 3 4.1 1.3 - Iris-versicolor
+Point 90: 5.5 2.5 4 1.3 - Iris-versicolor
+Point 91: 5.5 2.6 4.4 1.2 - Iris-versicolor
+Point 92: 6.1 3 4.6 1.4 - Iris-versicolor
+Point 93: 5.8 2.6 4 1.2 - Iris-versicolor
+Point 95: 5.6 2.7 4.2 1.3 - Iris-versicolor
+Point 97: 5.7 2.9 4.2 1.3 - Iris-versicolor
+Point 98: 6.2 2.9 4.3 1.3 - Iris-versicolor
+Point 100: 5.7 2.8 4.1 1.3 - Iris-versicolor
+Point 101: 6.3 3.3 6 2.5 - Iris-virginica
+Point 102: 5.8 2.7 5.1 1.9 - Iris-virginica
+Point 103: 7.1 3 5.9 2.1 - Iris-virginica
+Point 104: 6.3 2.9 5.6 1.8 - Iris-virginica
+Point 105: 6.5 3 5.8 2.2 - Iris-virginica
+Point 106: 7.6 3 6.6 2.1 - Iris-virginica
+Point 107: 4.9 2.5 4.5 1.7 - Iris-virginica
+Point 108: 7.3 2.9 6.3 1.8 - Iris-virginica
+Point 109: 6.7 2.5 5.8 1.8 - Iris-virginica
+Point 110: 7.2 3.6 6.1 2.5 - Iris-virginica
+Point 111: 6.5 3.2 5.1 2 - Iris-virginica
+Point 112: 6.4 2.7 5.3 1.9 - Iris-virginica
+Point 113: 6.8 3 5.5 2.1 - Iris-virginica
+Point 114: 5.7 2.5 5 2 - Iris-virginica
+Point 115: 5.8 2.8 5.1 2.4 - Iris-virginica
+Point 116: 6.4 3.2 5.3 2.3 - Iris-virginica
+Point 117: 6.5 3 5.5 1.8 - Iris-virginica
+Point 118: 7.7 3.8 6.7 2.2 - Iris-virginica
+Point 119: 7.7 2.6 6.9 2.3 - Iris-virginica
+Point 120: 6 2.2 5 1.5 - Iris-virginica
+Point 121: 6.9 3.2 5.7 2.3 - Iris-virginica
+Point 122: 5.6 2.8 4.9 2 - Iris-virginica
+Point 123: 7.7 2.8 6.7 2 - Iris-virginica
+Point 124: 6.3 2.7 4.9 1.8 - Iris-virginica
+Point 125: 6.7 3.3 5.7 2.1 - Iris-virginica
+Point 126: 7.2 3.2 6 1.8 - Iris-virginica
+Point 127: 6.2 2.8 4.8 1.8 - Iris-virginica
+Point 128: 6.1 3 4.9 1.8 - Iris-virginica
+Point 129: 6.4 2.8 5.6 2.1 - Iris-virginica
+Point 130: 7.2 3 5.8 1.6 - Iris-virginica
+Point 131: 7.4 2.8 6.1 1.9 - Iris-virginica
+Point 132: 7.9 3.8 6.4 2 - Iris-virginica
+Point 133: 6.4 2.8 5.6 2.2 - Iris-virginica
+Point 134: 6.3 2.8 5.1 1.5 - Iris-virginica
+Point 135: 6.1 2.6 5.6 1.4 - Iris-virginica
+Point 136: 7.7 3 6.1 2.3 - Iris-virginica
+Point 137: 6.3 3.4 5.6 2.4 - Iris-virginica
+Point 138: 6.4 3.1 5.5 1.8 - Iris-virginica
+Point 139: 6 3 4.8 1.8 - Iris-virginica
+Point 140: 6.9 3.1 5.4 2.1 - Iris-virginica
+Point 141: 6.7 3.1 5.6 2.4 - Iris-virginica
+Point 142: 6.9 3.1 5.1 2.3 - Iris-virginica
+Point 143: 5.8 2.7 5.1 1.9 - Iris-virginica
+Point 144: 6.8 3.2 5.9 2.3 - Iris-virginica
+Point 145: 6.7 3.3 5.7 2.5 - Iris-virginica
+Point 146: 6.7 3 5.2 2.3 - Iris-virginica
+Point 147: 6.3 2.5 5 1.9 - Iris-virginica
+Point 148: 6.5 3 5.2 2 - Iris-virginica
+Point 149: 6.2 3.4 5.4 2.3 - Iris-virginica
+Point 150: 5.9 3 5.1 1.8 - Iris-virginica
+Cluster values: 6.30103 2.8866 4.95876 1.69588 
+
+TOTAL EXECUTION TIME = 51 µs
+TIME PHASE 1 = 2 µs
+TIME PHASE 2 = 48 µs
+AVERAGE TIME PER ITERATION = 16 µs
 ===== kmeans-serial-fast Execution Completed! =====
 
-===== Running kmeans on: datasets/1.txt =====
+===== Running kmeans on: datasets/2.txt =====
 Break in iteration 5
 
 Cluster 1
-Point 1: 1 1 
-Point 2: 1.5 2 
-Cluster values: 1.25 1.5 
+Point 59: 6.6 2.9 4.6 1.3 - Iris-versicolor
+Point 51: 7 3.2 4.7 1.4 - Iris-versicolor
+Point 52: 6.4 3.2 4.5 1.5 - Iris-versicolor
+Point 54: 5.5 2.3 4 1.3 - Iris-versicolor
+Point 55: 6.5 2.8 4.6 1.5 - Iris-versicolor
+Point 56: 5.7 2.8 4.5 1.3 - Iris-versicolor
+Point 57: 6.3 3.3 4.7 1.6 - Iris-versicolor
+Point 58: 4.9 2.4 3.3 1 - Iris-versicolor
+Point 60: 5.2 2.7 3.9 1.4 - Iris-versicolor
+Point 61: 5 2 3.5 1 - Iris-versicolor
+Point 62: 5.9 3 4.2 1.5 - Iris-versicolor
+Point 63: 6 2.2 4 1 - Iris-versicolor
+Point 64: 6.1 2.9 4.7 1.4 - Iris-versicolor
+Point 65: 5.6 2.9 3.6 1.3 - Iris-versicolor
+Point 66: 6.7 3.1 4.4 1.4 - Iris-versicolor
+Point 67: 5.6 3 4.5 1.5 - Iris-versicolor
+Point 68: 5.8 2.7 4.1 1 - Iris-versicolor
+Point 69: 6.2 2.2 4.5 1.5 - Iris-versicolor
+Point 70: 5.6 2.5 3.9 1.1 - Iris-versicolor
+Point 71: 5.9 3.2 4.8 1.8 - Iris-versicolor
+Point 72: 6.1 2.8 4 1.3 - Iris-versicolor
+Point 73: 6.3 2.5 4.9 1.5 - Iris-versicolor
+Point 74: 6.1 2.8 4.7 1.2 - Iris-versicolor
+Point 75: 6.4 2.9 4.3 1.3 - Iris-versicolor
+Point 76: 6.6 3 4.4 1.4 - Iris-versicolor
+Point 77: 6.8 2.8 4.8 1.4 - Iris-versicolor
+Point 79: 6 2.9 4.5 1.5 - Iris-versicolor
+Point 80: 5.7 2.6 3.5 1 - Iris-versicolor
+Point 81: 5.5 2.4 3.8 1.1 - Iris-versicolor
+Point 82: 5.5 2.4 3.7 1 - Iris-versicolor
+Point 83: 5.8 2.7 3.9 1.2 - Iris-versicolor
+Point 84: 6 2.7 5.1 1.6 - Iris-versicolor
+Point 85: 5.4 3 4.5 1.5 - Iris-versicolor
+Point 86: 6 3.4 4.5 1.6 - Iris-versicolor
+Point 87: 6.7 3.1 4.7 1.5 - Iris-versicolor
+Point 88: 6.3 2.3 4.4 1.3 - Iris-versicolor
+Point 89: 5.6 3 4.1 1.3 - Iris-versicolor
+Point 90: 5.5 2.5 4 1.3 - Iris-versicolor
+Point 91: 5.5 2.6 4.4 1.2 - Iris-versicolor
+Point 92: 6.1 3 4.6 1.4 - Iris-versicolor
+Point 93: 5.8 2.6 4 1.2 - Iris-versicolor
+Point 94: 5 2.3 3.3 1 - Iris-versicolor
+Point 95: 5.6 2.7 4.2 1.3 - Iris-versicolor
+Point 96: 5.7 3 4.2 1.2 - Iris-versicolor
+Point 97: 5.7 2.9 4.2 1.3 - Iris-versicolor
+Point 98: 6.2 2.9 4.3 1.3 - Iris-versicolor
+Point 99: 5.1 2.5 3 1.1 - Iris-versicolor
+Point 100: 5.7 2.8 4.1 1.3 - Iris-versicolor
+Point 102: 5.8 2.7 5.1 1.9 - Iris-virginica
+Point 107: 4.9 2.5 4.5 1.7 - Iris-virginica
+Point 114: 5.7 2.5 5 2 - Iris-virginica
+Point 115: 5.8 2.8 5.1 2.4 - Iris-virginica
+Point 120: 6 2.2 5 1.5 - Iris-virginica
+Point 122: 5.6 2.8 4.9 2 - Iris-virginica
+Point 124: 6.3 2.7 4.9 1.8 - Iris-virginica
+Point 127: 6.2 2.8 4.8 1.8 - Iris-virginica
+Point 128: 6.1 3 4.9 1.8 - Iris-virginica
+Point 134: 6.3 2.8 5.1 1.5 - Iris-virginica
+Point 139: 6 3 4.8 1.8 - Iris-virginica
+Point 143: 5.8 2.7 5.1 1.9 - Iris-virginica
+Point 147: 6.3 2.5 5 1.9 - Iris-virginica
+Point 150: 5.9 3 5.1 1.8 - Iris-virginica
+Cluster values: 5.90161 2.74839 4.39355 1.43387 
 
-TOTAL EXECUTION TIME = 9
-TIME PHASE 1 = 1
-TIME PHASE 2 = 7
+TOTAL EXECUTION TIME = 74
+TIME PHASE 1 = 2
+TIME PHASE 2 = 71
 Cluster 2
-Point 6: 4.5 5 
-Point 4: 5 7 
-Point 5: 3.5 5 
-Point 7: 3.5 4.5 
-Point 3: 3 4 
-Cluster values: 3.9 5.1 
+Point 136: 7.7 3 6.1 2.3 - Iris-virginica
+Point 101: 6.3 3.3 6 2.5 - Iris-virginica
+Point 103: 7.1 3 5.9 2.1 - Iris-virginica
+Point 105: 6.5 3 5.8 2.2 - Iris-virginica
+Point 106: 7.6 3 6.6 2.1 - Iris-virginica
+Point 108: 7.3 2.9 6.3 1.8 - Iris-virginica
+Point 109: 6.7 2.5 5.8 1.8 - Iris-virginica
+Point 110: 7.2 3.6 6.1 2.5 - Iris-virginica
+Point 113: 6.8 3 5.5 2.1 - Iris-virginica
+Point 118: 7.7 3.8 6.7 2.2 - Iris-virginica
+Point 119: 7.7 2.6 6.9 2.3 - Iris-virginica
+Point 121: 6.9 3.2 5.7 2.3 - Iris-virginica
+Point 123: 7.7 2.8 6.7 2 - Iris-virginica
+Point 125: 6.7 3.3 5.7 2.1 - Iris-virginica
+Point 126: 7.2 3.2 6 1.8 - Iris-virginica
+Point 130: 7.2 3 5.8 1.6 - Iris-virginica
+Point 131: 7.4 2.8 6.1 1.9 - Iris-virginica
+Point 132: 7.9 3.8 6.4 2 - Iris-virginica
+Point 137: 6.3 3.4 5.6 2.4 - Iris-virginica
+Point 140: 6.9 3.1 5.4 2.1 - Iris-virginica
+Point 141: 6.7 3.1 5.6 2.4 - Iris-virginica
+Point 144: 6.8 3.2 5.9 2.3 - Iris-virginica
+Point 145: 6.7 3.3 5.7 2.5 - Iris-virginica
+Point 104: 6.3 2.9 5.6 1.8 - Iris-virginica
+Point 116: 6.4 3.2 5.3 2.3 - Iris-virginica
+Point 117: 6.5 3 5.5 1.8 - Iris-virginica
+Point 129: 6.4 2.8 5.6 2.1 - Iris-virginica
+Point 133: 6.4 2.8 5.6 2.2 - Iris-virginica
+Point 138: 6.4 3.1 5.5 1.8 - Iris-virginica
+Point 142: 6.9 3.1 5.1 2.3 - Iris-virginica
+Point 146: 6.7 3 5.2 2.3 - Iris-virginica
+Point 149: 6.2 3.4 5.4 2.3 - Iris-virginica
+Point 111: 6.5 3.2 5.1 2 - Iris-virginica
+Point 112: 6.4 2.7 5.3 1.9 - Iris-virginica
+Point 148: 6.5 3 5.2 2 - Iris-virginica
+Point 53: 6.9 3.1 4.9 1.5 - Iris-versicolor
+Point 78: 6.7 3 5 1.7 - Iris-versicolor
+Point 135: 6.1 2.6 5.6 1.4 - Iris-virginica
+Cluster values: 6.85 3.07368 5.74211 2.07105 
 
-TOTAL EXECUTION TIME = 9
-TIME PHASE 1 = 1
-TIME PHASE 2 = 7
+TOTAL EXECUTION TIME = 74
+TIME PHASE 1 = 2
+TIME PHASE 2 = 71
+Cluster 3
+Point 15: 5.8 4 1.2 0.2 - Iris-setosa
+Point 1: 5.1 3.5 1.4 0.2 - Iris-setosa
+Point 2: 4.9 3 1.4 0.2 - Iris-setosa
+Point 3: 4.7 3.2 1.3 0.2 - Iris-setosa
+Point 4: 4.6 3.1 1.5 0.2 - Iris-setosa
+Point 5: 5 3.6 1.4 0.2 - Iris-setosa
+Point 6: 5.4 3.9 1.7 0.4 - Iris-setosa
+Point 7: 4.6 3.4 1.4 0.3 - Iris-setosa
+Point 8: 5 3.4 1.5 0.2 - Iris-setosa
+Point 9: 4.4 2.9 1.4 0.2 - Iris-setosa
+Point 10: 4.9 3.1 1.5 0.1 - Iris-setosa
+Point 11: 5.4 3.7 1.5 0.2 - Iris-setosa
+Point 12: 4.8 3.4 1.6 0.2 - Iris-setosa
+Point 13: 4.8 3 1.4 0.1 - Iris-setosa
+Point 14: 4.3 3 1.1 0.1 - Iris-setosa
+Point 16: 5.7 4.4 1.5 0.4 - Iris-setosa
+Point 17: 5.4 3.9 1.3 0.4 - Iris-setosa
+Point 18: 5.1 3.5 1.4 0.3 - Iris-setosa
+Point 19: 5.7 3.8 1.7 0.3 - Iris-setosa
+Point 20: 5.1 3.8 1.5 0.3 - Iris-setosa
+Point 21: 5.4 3.4 1.7 0.2 - Iris-setosa
+Point 22: 5.1 3.7 1.5 0.4 - Iris-setosa
+Point 23: 4.6 3.6 1 0.2 - Iris-setosa
+Point 24: 5.1 3.3 1.7 0.5 - Iris-setosa
+Point 25: 4.8 3.4 1.9 0.2 - Iris-setosa
+Point 26: 5 3 1.6 0.2 - Iris-setosa
+Point 27: 5 3.4 1.6 0.4 - Iris-setosa
+Point 28: 5.2 3.5 1.5 0.2 - Iris-setosa
+Point 29: 5.2 3.4 1.4 0.2 - Iris-setosa
+Point 30: 4.7 3.2 1.6 0.2 - Iris-setosa
+Point 31: 4.8 3.1 1.6 0.2 - Iris-setosa
+Point 32: 5.4 3.4 1.5 0.4 - Iris-setosa
+Point 33: 5.2 4.1 1.5 0.1 - Iris-setosa
+Point 34: 5.5 4.2 1.4 0.2 - Iris-setosa
+Point 35: 4.9 3.1 1.5 0.1 - Iris-setosa
+Point 36: 5 3.2 1.2 0.2 - Iris-setosa
+Point 37: 5.5 3.5 1.3 0.2 - Iris-setosa
+Point 38: 4.9 3.1 1.5 0.1 - Iris-setosa
+Point 39: 4.4 3 1.3 0.2 - Iris-setosa
+Point 40: 5.1 3.4 1.5 0.2 - Iris-setosa
+Point 41: 5 3.5 1.3 0.3 - Iris-setosa
+Point 42: 4.5 2.3 1.3 0.3 - Iris-setosa
+Point 43: 4.4 3.2 1.3 0.2 - Iris-setosa
+Point 44: 5 3.5 1.6 0.6 - Iris-setosa
+Point 45: 5.1 3.8 1.9 0.4 - Iris-setosa
+Point 46: 4.8 3 1.4 0.3 - Iris-setosa
+Point 47: 5.1 3.8 1.6 0.2 - Iris-setosa
+Point 48: 4.6 3.2 1.4 0.2 - Iris-setosa
+Point 49: 5.3 3.7 1.5 0.2 - Iris-setosa
+Point 50: 5 3.3 1.4 0.2 - Iris-setosa
+Cluster values: 5.006 3.418 1.464 0.244 
+
+TOTAL EXECUTION TIME = 74
+TIME PHASE 1 = 2
+TIME PHASE 2 = 71
 ===== kmeans Execution Completed! =====
 

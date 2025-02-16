@@ -191,22 +191,21 @@ public:
 
 	void run(vector<Point> &points)
 	{
-		auto begin = chrono::high_resolution_clock::now();
+		auto begin = chrono::high_resolution_clock::now(); // Start total time measurement
 
 		if (K > total_points)
 			return;
 
 		vector<int> prohibited_indexes;
 
-		// choose K distinct values for the centers of the clusters
+		// Step 1: **Select K initial centroids randomly**
 		for (int i = 0; i < K; i++)
 		{
 			while (true)
 			{
 				int index_point = rand() % total_points;
 
-				if (find(prohibited_indexes.begin(), prohibited_indexes.end(),
-						 index_point) == prohibited_indexes.end())
+				if (find(prohibited_indexes.begin(), prohibited_indexes.end(), index_point) == prohibited_indexes.end())
 				{
 					prohibited_indexes.push_back(index_point);
 					points[index_point].setCluster(i);
@@ -216,15 +215,20 @@ public:
 				}
 			}
 		}
-		auto end_phase1 = chrono::high_resolution_clock::now();
+
+		auto end_phase1 = chrono::high_resolution_clock::now(); // End of initialization phase
 
 		int iter = 1;
+		long long total_iteration_time = 0; // Store cumulative iteration time
 
+		// Step 2: **Iterate until convergence or max_iterations reached**
 		while (true)
 		{
-			bool done = true;
+			auto iteration_start = chrono::high_resolution_clock::now(); // Start iteration time
 
-			// associates each point to the nearest center
+			bool done = true; // Track whether clusters have stabilized
+
+			// Step 2a: **Assign each point to the nearest cluster**
 			for (int i = 0; i < total_points; i++)
 			{
 				int id_old_cluster = points[i].getCluster();
@@ -241,7 +245,7 @@ public:
 				}
 			}
 
-			// recalculating the center of each cluster
+			// Step 2b: **Recalculate the centroids based on new assignments**
 			for (int i = 0; i < K; i++)
 			{
 				for (int j = 0; j < total_values; j++)
@@ -253,22 +257,28 @@ public:
 					{
 						for (int p = 0; p < total_points_cluster; p++)
 							sum += clusters[i].getPoint(p).getValue(j);
+
 						clusters[i].setCentralValue(j, sum / total_points_cluster);
 					}
 				}
 			}
 
+			auto iteration_end = chrono::high_resolution_clock::now();													  // End iteration time
+			total_iteration_time += chrono::duration_cast<chrono::microseconds>(iteration_end - iteration_start).count(); // Accumulate iteration time
+
+			// Step 2c: **Check stopping conditions**
 			if (done == true || iter >= max_iterations)
 			{
 				cout << "Break in iteration " << iter << "\n\n";
 				break;
 			}
 
-			iter++;
+			iter++; // Increment iteration count
 		}
-		auto end = chrono::high_resolution_clock::now();
 
-		// shows elements of clusters
+		auto end = chrono::high_resolution_clock::now(); // End total execution time
+
+		// Step 3: **Display the final clusters and execution time**
 		for (int i = 0; i < K; i++)
 		{
 			int total_points_cluster = clusters[i].getTotalPoints();
@@ -281,7 +291,6 @@ public:
 					cout << clusters[i].getPoint(j).getValue(p) << " ";
 
 				string point_name = clusters[i].getPoint(j).getName();
-
 				if (point_name != "")
 					cout << "- " << point_name;
 
@@ -289,16 +298,22 @@ public:
 			}
 
 			cout << "Cluster values: ";
-
 			for (int j = 0; j < total_values; j++)
 				cout << clusters[i].getCentralValue(j) << " ";
 
 			cout << "\n\n";
-			cout << "TOTAL EXECUTION TIME = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "\n";
+		}
 
-			cout << "TIME PHASE 1 = " << std::chrono::duration_cast<std::chrono::microseconds>(end_phase1 - begin).count() << "\n";
+		// Display execution time breakdown
+		cout << "TOTAL EXECUTION TIME = " << chrono::duration_cast<chrono::microseconds>(end - begin).count() << " µs\n";
+		cout << "TIME PHASE 1 = " << chrono::duration_cast<chrono::microseconds>(end_phase1 - begin).count() << " µs\n";
+		cout << "TIME PHASE 2 = " << chrono::duration_cast<chrono::microseconds>(end - end_phase1).count() << " µs\n";
 
-			cout << "TIME PHASE 2 = " << std::chrono::duration_cast<std::chrono::microseconds>(end - end_phase1).count() << "\n";
+		// Calculate and display the **average time per iteration**
+		if (iter > 1) // Only compute if we have at least 1 iteration
+		{
+			double avg_time_per_iteration = (double)chrono::duration_cast<chrono::microseconds>(end - end_phase1).count() / iter;
+			cout << "AVERAGE TIME PER ITERATION = " << avg_time_per_iteration << " µs\n";
 		}
 	}
 };

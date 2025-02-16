@@ -178,18 +178,18 @@ public:
 class KMeans
 {
 private:
-	int K;                     // Number of clusters
-	int total_values;          // Number of features per data point
-	int total_points;          // Total number of data points
-	int max_iterations;        // Maximum iterations allowed
-	vector<Cluster> clusters;  // Stores the clusters
+	int K;					  // Number of clusters
+	int total_values;		  // Number of features per data point
+	int total_points;		  // Total number of data points
+	int max_iterations;		  // Maximum iterations allowed
+	vector<Cluster> clusters; // Stores the clusters
 
 	// ======================================================================
 	// getIDNearestCenter
 	// ======================================================================
 	// Finds the **nearest cluster** to a given data point using **Euclidean distance**.
 	// Returns the index of the closest cluster.
-	// 
+	//
 	// The Euclidean distance formula:
 	//    distance = sqrt((x1 - x2)^2 + (y1 - y2)^2 + ... + (n1 - n2)^2)
 	//
@@ -255,56 +255,57 @@ public:
 	// ======================================================================
 	void run(vector<Point> &points)
 	{
-		auto begin = chrono::high_resolution_clock::now(); // Start timing
+		auto begin = chrono::high_resolution_clock::now(); // Start total time measurement
 
-		// If K is greater than the total number of points, return early
 		if (K > total_points)
 			return;
 
-		vector<int> prohibited_indexes; // Stores already chosen indexes to avoid duplicate centroids
+		vector<int> prohibited_indexes;
 
 		// Step 1: **Select K initial centroids randomly**
 		for (int i = 0; i < K; i++)
 		{
 			while (true)
 			{
-				int index_point = rand() % total_points; // Choose a random point
+				int index_point = rand() % total_points;
 
-				// Ensure that the same point is not selected twice
 				if (find(prohibited_indexes.begin(), prohibited_indexes.end(), index_point) == prohibited_indexes.end())
 				{
-					prohibited_indexes.push_back(index_point); // Mark it as chosen
-					points[index_point].setCluster(i); // Assign to cluster
-					Cluster cluster(i, points[index_point]); // Create new cluster
-					clusters.push_back(cluster); // Store cluster
+					prohibited_indexes.push_back(index_point);
+					points[index_point].setCluster(i);
+					Cluster cluster(i, points[index_point]);
+					clusters.push_back(cluster);
 					break;
 				}
 			}
 		}
+
 		auto end_phase1 = chrono::high_resolution_clock::now(); // End of initialization phase
 
 		int iter = 1;
+		long long total_iteration_time = 0; // Store cumulative iteration time
 
 		// Step 2: **Iterate until convergence or max_iterations reached**
 		while (true)
 		{
+			auto iteration_start = chrono::high_resolution_clock::now(); // Start iteration time
+
 			bool done = true; // Track whether clusters have stabilized
 
 			// Step 2a: **Assign each point to the nearest cluster**
 			for (int i = 0; i < total_points; i++)
 			{
-				int id_old_cluster = points[i].getCluster();  // Get current cluster
-				int id_nearest_center = getIDNearestCenter(points[i]); // Find the closest cluster
+				int id_old_cluster = points[i].getCluster();
+				int id_nearest_center = getIDNearestCenter(points[i]);
 
-				// If the point belongs to a different cluster, update its assignment
 				if (id_old_cluster != id_nearest_center)
 				{
-					if (id_old_cluster != -1) // If already assigned, remove from old cluster
+					if (id_old_cluster != -1)
 						clusters[id_old_cluster].removePoint(points[i].getID());
 
-					points[i].setCluster(id_nearest_center); // Assign to new cluster
-					clusters[id_nearest_center].addPoint(points[i]); // Add to new cluster
-					done = false; // Mark as changed
+					points[i].setCluster(id_nearest_center);
+					clusters[id_nearest_center].addPoint(points[i]);
+					done = false;
 				}
 			}
 
@@ -318,7 +319,6 @@ public:
 
 					if (total_points_cluster > 0)
 					{
-						// Compute new centroid as the mean of assigned points
 						for (int p = 0; p < total_points_cluster; p++)
 							sum += clusters[i].getPoint(p).getValue(j);
 
@@ -326,6 +326,9 @@ public:
 					}
 				}
 			}
+
+			auto iteration_end = chrono::high_resolution_clock::now();													  // End iteration time
+			total_iteration_time += chrono::duration_cast<chrono::microseconds>(iteration_end - iteration_start).count(); // Accumulate iteration time
 
 			// Step 2c: **Check stopping conditions**
 			if (done == true || iter >= max_iterations)
@@ -337,7 +340,7 @@ public:
 			iter++; // Increment iteration count
 		}
 
-		auto end = chrono::high_resolution_clock::now(); // End timing
+		auto end = chrono::high_resolution_clock::now(); // End total execution time
 
 		// Step 3: **Display the final clusters and execution time**
 		for (int i = 0; i < K; i++)
@@ -358,17 +361,23 @@ public:
 				cout << endl;
 			}
 
-			// Display the new centroid values
 			cout << "Cluster values: ";
 			for (int j = 0; j < total_values; j++)
 				cout << clusters[i].getCentralValue(j) << " ";
 
 			cout << "\n\n";
+		}
 
-			// Execution time details
-			cout << "TOTAL EXECUTION TIME = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "\n";
-			cout << "TIME PHASE 1 = " << std::chrono::duration_cast<std::chrono::microseconds>(end_phase1 - begin).count() << "\n";
-			cout << "TIME PHASE 2 = " << std::chrono::duration_cast<std::chrono::microseconds>(end - end_phase1).count() << "\n";
+		// Display execution time breakdown
+		cout << "TOTAL EXECUTION TIME = " << chrono::duration_cast<chrono::microseconds>(end - begin).count() << " µs\n";
+		cout << "TIME PHASE 1 = " << chrono::duration_cast<chrono::microseconds>(end_phase1 - begin).count() << " µs\n";
+		cout << "TIME PHASE 2 = " << chrono::duration_cast<chrono::microseconds>(end - end_phase1).count() << " µs\n";
+
+		// Calculate and display the **average time per iteration**
+		if (iter > 1) // Only compute if we have at least 1 iteration
+		{
+			double avg_time_per_iteration = (double)chrono::duration_cast<chrono::microseconds>(end - end_phase1).count() / iter;
+			cout << "AVERAGE TIME PER ITERATION = " << avg_time_per_iteration << " µs\n";
 		}
 	}
 };
@@ -414,7 +423,7 @@ int main(int argc, char *argv[])
 	// Step 1: Read Input Values
 	// ==========================================================================
 	// Read the total number of data points, the number of features per point,
-	// the number of clusters (K), the maximum number of iterations, and whether 
+	// the number of clusters (K), the maximum number of iterations, and whether
 	// each point has a name.
 	cin >> total_points >> total_values >> K >> max_iterations >> has_name;
 
@@ -442,11 +451,11 @@ int main(int argc, char *argv[])
 		{
 			cin >> point_name;
 			Point p(i, values, point_name); // Create a Point with a name
-			points.push_back(p); // Store the point in the dataset
+			points.push_back(p);			// Store the point in the dataset
 		}
 		else
 		{
-			Point p(i, values); // Create a Point without a name
+			Point p(i, values);	 // Create a Point without a name
 			points.push_back(p); // Store the point in the dataset
 		}
 	}
