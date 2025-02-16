@@ -20,12 +20,12 @@ private:
 	string name;
 
 public:
-	Point(int id_point, vector<double>& values, string name = "")
+	Point(int id_point, vector<double> &values, string name = "")
 	{
 		this->id_point = id_point;
 		total_values = values.size();
 
-		for(int i = 0; i < total_values; i++)
+		for (int i = 0; i < total_values; i++)
 			this->values.push_back(values[i]);
 
 		this->name = name;
@@ -82,7 +82,7 @@ public:
 
 		int total_values = point.getTotalValues();
 
-		for(int i = 0; i < total_values; i++)
+		for (int i = 0; i < total_values; i++)
 			central_values.push_back(point.getValue(i));
 
 		points.push_back(point);
@@ -97,9 +97,9 @@ public:
 	{
 		int total_points = points.size();
 
-		for(int i = 0; i < total_points; i++)
+		for (int i = 0; i < total_points; i++)
 		{
-			if(points[i].getID() == id_point)
+			if (points[i].getID() == id_point)
 			{
 				points.erase(points.begin() + i);
 				return true;
@@ -147,28 +147,30 @@ private:
 		double sum = 0.0, min_dist;
 		int id_cluster_center = 0;
 
-		for(int i = 0; i < total_values; i++)
+		for (int i = 0; i < total_values; i++)
 		{
 			sum += pow(clusters[0].getCentralValue(i) -
-					   point.getValue(i), 2.0);
+						   point.getValue(i),
+					   2.0);
 		}
 
 		min_dist = sqrt(sum);
 
-		for(int i = 1; i < K; i++)
+		for (int i = 1; i < K; i++)
 		{
 			double dist;
 			sum = 0.0;
 
-			for(int j = 0; j < total_values; j++)
+			for (int j = 0; j < total_values; j++)
 			{
 				sum += pow(clusters[i].getCentralValue(j) -
-						   point.getValue(j), 2.0);
+							   point.getValue(j),
+						   2.0);
 			}
 
 			dist = sqrt(sum);
 
-			if(dist < min_dist)
+			if (dist < min_dist)
 			{
 				min_dist = dist;
 				id_cluster_center = i;
@@ -187,24 +189,24 @@ public:
 		this->max_iterations = max_iterations;
 	}
 
-	void run(vector<Point> & points)
+	void run(vector<Point> &points)
 	{
-        auto begin = chrono::high_resolution_clock::now();
+		auto begin = chrono::high_resolution_clock::now();
 
-		if(K > total_points)
+		if (K > total_points)
 			return;
 
 		vector<int> prohibited_indexes;
 
 		// choose K distinct values for the centers of the clusters
-		for(int i = 0; i < K; i++)
+		for (int i = 0; i < K; i++)
 		{
-			while(true)
+			while (true)
 			{
 				int index_point = rand() % total_points;
 
-				if(find(prohibited_indexes.begin(), prohibited_indexes.end(),
-						index_point) == prohibited_indexes.end())
+				if (find(prohibited_indexes.begin(), prohibited_indexes.end(),
+						 index_point) == prohibited_indexes.end())
 				{
 					prohibited_indexes.push_back(index_point);
 					points[index_point].setCluster(i);
@@ -214,23 +216,23 @@ public:
 				}
 			}
 		}
-        auto end_phase1 = chrono::high_resolution_clock::now();
+		auto end_phase1 = chrono::high_resolution_clock::now();
 
 		int iter = 1;
 
-		while(true)
+		while (true)
 		{
 			bool done = true;
 
 			// associates each point to the nearest center
-			for(int i = 0; i < total_points; i++)
+			for (int i = 0; i < total_points; i++)
 			{
 				int id_old_cluster = points[i].getCluster();
 				int id_nearest_center = getIDNearestCenter(points[i]);
 
-				if(id_old_cluster != id_nearest_center)
+				if (id_old_cluster != id_nearest_center)
 				{
-					if(id_old_cluster != -1)
+					if (id_old_cluster != -1)
 						clusters[id_old_cluster].removePoint(points[i].getID());
 
 					points[i].setCluster(id_nearest_center);
@@ -240,23 +242,23 @@ public:
 			}
 
 			// recalculating the center of each cluster
-			for(int i = 0; i < K; i++)
+			for (int i = 0; i < K; i++)
 			{
-				for(int j = 0; j < total_values; j++)
+				for (int j = 0; j < total_values; j++)
 				{
 					int total_points_cluster = clusters[i].getTotalPoints();
 					double sum = 0.0;
 
-					if(total_points_cluster > 0)
+					if (total_points_cluster > 0)
 					{
-						for(int p = 0; p < total_points_cluster; p++)
+						for (int p = 0; p < total_points_cluster; p++)
 							sum += clusters[i].getPoint(p).getValue(j);
 						clusters[i].setCentralValue(j, sum / total_points_cluster);
 					}
 				}
 			}
 
-			if(done == true || iter >= max_iterations)
+			if (done == true || iter >= max_iterations)
 			{
 				cout << "Break in iteration " << iter << "\n\n";
 				break;
@@ -264,23 +266,23 @@ public:
 
 			iter++;
 		}
-        auto end = chrono::high_resolution_clock::now();
+		auto end = chrono::high_resolution_clock::now();
 
 		// shows elements of clusters
-		for(int i = 0; i < K; i++)
+		for (int i = 0; i < K; i++)
 		{
-			int total_points_cluster =  clusters[i].getTotalPoints();
+			int total_points_cluster = clusters[i].getTotalPoints();
 
 			cout << "Cluster " << clusters[i].getID() + 1 << endl;
-			for(int j = 0; j < total_points_cluster; j++)
+			for (int j = 0; j < total_points_cluster; j++)
 			{
 				cout << "Point " << clusters[i].getPoint(j).getID() + 1 << ": ";
-				for(int p = 0; p < total_values; p++)
+				for (int p = 0; p < total_values; p++)
 					cout << clusters[i].getPoint(j).getValue(p) << " ";
 
 				string point_name = clusters[i].getPoint(j).getName();
 
-				if(point_name != "")
+				if (point_name != "")
 					cout << "- " << point_name;
 
 				cout << endl;
@@ -288,22 +290,22 @@ public:
 
 			cout << "Cluster values: ";
 
-			for(int j = 0; j < total_values; j++)
+			for (int j = 0; j < total_values; j++)
 				cout << clusters[i].getCentralValue(j) << " ";
 
 			cout << "\n\n";
-            cout << "TOTAL EXECUTION TIME = "<<std::chrono::duration_cast<std::chrono::microseconds>(end-begin).count()<<"\n";
+			cout << "TOTAL EXECUTION TIME = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "\n";
 
-            cout << "TIME PHASE 1 = "<<std::chrono::duration_cast<std::chrono::microseconds>(end_phase1-begin).count()<<"\n";
+			cout << "TIME PHASE 1 = " << std::chrono::duration_cast<std::chrono::microseconds>(end_phase1 - begin).count() << "\n";
 
-            cout << "TIME PHASE 2 = "<<std::chrono::duration_cast<std::chrono::microseconds>(end-end_phase1).count()<<"\n";
+			cout << "TIME PHASE 2 = " << std::chrono::duration_cast<std::chrono::microseconds>(end - end_phase1).count() << "\n";
 		}
 	}
 };
 
 int main(int argc, char *argv[])
 {
-	srand (time(NULL));
+	srand(time(NULL));
 
 	int total_points, total_values, K, max_iterations, has_name;
 
@@ -312,18 +314,18 @@ int main(int argc, char *argv[])
 	vector<Point> points;
 	string point_name;
 
-	for(int i = 0; i < total_points; i++)
+	for (int i = 0; i < total_points; i++)
 	{
 		vector<double> values;
 
-		for(int j = 0; j < total_values; j++)
+		for (int j = 0; j < total_values; j++)
 		{
 			double value;
 			cin >> value;
 			values.push_back(value);
 		}
 
-		if(has_name)
+		if (has_name)
 		{
 			cin >> point_name;
 			Point p(i, values, point_name);
