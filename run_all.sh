@@ -76,7 +76,7 @@ for IMPL in "${IMPLEMENTATIONS[@]}"; do
     echo "===== Running $EXECUTABLE on: $DATASET =====" >> "$OUTPUT_FILE"
 
     # Run K-Means and append results to output file
-    cat "$DATASET" | ./"$EXECUTABLE" >> "$OUTPUT_FILE" 2>&1
+    cat "$DATASET" | ./"$EXECUTABLE" 2>&1 | tee -a "$OUTPUT_FILE"
 
     echo "===== $EXECUTABLE Execution Completed! ====="
     echo "===== $EXECUTABLE Execution Completed! =====" >> "$OUTPUT_FILE"

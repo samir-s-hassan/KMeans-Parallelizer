@@ -56,7 +56,7 @@ echo "===== Professor's Serial Implementation of K-Means on: $DATASET ====="
 echo ""
 
 # Run K-Means with the selected dataset
-cat "$DATASET" | ./"$EXECUTABLE"
+cat "$DATASET" | ./"$EXECUTABLE" 2>&1 | tee -a "$OUTPUT_FILE"
 
 echo "===== K-Means Execution Completed! ====="
 echo ""

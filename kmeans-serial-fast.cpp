@@ -183,6 +183,7 @@ private:
 	int total_points;		  // Total number of data points
 	int max_iterations;		  // Maximum iterations allowed
 	vector<Cluster> clusters; // Stores the clusters
+	
 
 	// ======================================================================
 	// getIDNearestCenter
@@ -430,14 +431,16 @@ int main(int argc, char *argv[])
 
 	// Declare a vector to store all points in the dataset
 	vector<Point> points;
-	string point_name; // To store the optional name of the point
+	points.reserve(total_points); // SAMIR - Preallocate memory for all points
+	string point_name;			  // To store the optional name of the point
 
 	// ==========================================================================
 	// Step 2: Read Points from Input
 	// ==========================================================================
 	for (int i = 0; i < total_points; i++)
 	{
-		vector<double> values; // Store feature values of the current point
+		vector<double> values;		  // Store feature values of the current point
+		values.reserve(total_values); // SAMIR - ✅ Preallocate memory for feature values
 
 		// Read the feature values for the current point
 		for (int j = 0; j < total_values; j++)
@@ -452,12 +455,12 @@ int main(int argc, char *argv[])
 		{
 			cin >> point_name;
 			Point p(i, values, point_name); // Create a Point with a name
-			points.push_back(p);			// Store the point in the dataset
+			points.emplace_back(i, values); // SAMIR - ✅ Use `emplace_back()` instead of `push_back()`
 		}
 		else
 		{
-			Point p(i, values);	 // Create a Point without a name
-			points.push_back(p); // Store the point in the dataset
+			Point p(i, values);				// Create a Point without a name
+			points.emplace_back(i, values); // SAMIR - ✅ Use `emplace_back()` instead of `push_back()`
 		}
 	}
 
