@@ -1,10 +1,13 @@
 #!/bin/bash
 
 # Set the source file name and output executable
-SOURCE_FILE="kmeans-serial-fast.cpp"
-EXECUTABLE="kmeans-serial-fast"
+SOURCE_FILE="kmeans-parallel.cpp"
+EXECUTABLE="kmeans-parallel"
 DATASET_DIR="datasets"  # Default dataset directory
 DEFAULT_DATASET="1.txt"  # Default dataset file
+
+# clear the terminal
+clear
 
 # Load the correct GCC module
 module load gcc-11.2.0
@@ -52,11 +55,11 @@ if [ ! -f "$DATASET" ]; then
     exit 1
 fi
 
-echo "===== Faster? Serial Implementation of K-Means on: $DATASET ====="
+echo "===== Parallel Implementation of K-Means on: $DATASET ====="
 echo ""
 
-# Run K-Means with the selected dataset
-cat "$DATASET" | ./"$EXECUTABLE" 2>&1 | tee -a "$OUTPUT_FILE"
+# Run K-Means and append results to output file (without terminal output)
+cat "$DATASET" | ./"$EXECUTABLE" >> "$OUTPUT_FILE" 2>&1
 
 echo "===== K-Means Execution Completed! ====="
 echo ""

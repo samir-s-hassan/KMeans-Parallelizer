@@ -108,6 +108,7 @@ public:
 		this->id_cluster = id_cluster;
 
 		int total_values = point.getTotalValues();
+		central_values.reserve(total_values); // SAMIR - ✅ Reserve space for feature values
 
 		for (int i = 0; i < total_values; i++)
 			central_values.push_back(point.getValue(i));
@@ -117,9 +118,12 @@ public:
 
 	void addPoint(Point point)
 	{
-		points.push_back(point);
+		if (points.capacity() == 0) // SAMIR - ✅ Only reserve once
+			points.reserve(100); // Adjust based on dataset I am using
+	
+		points.push_back(point); // Efficiently add point
 	}
-
+	
 	bool removePoint(int id_point)
 	{
 		int total_points = points.size();
@@ -183,7 +187,6 @@ private:
 	int total_points;		  // Total number of data points
 	int max_iterations;		  // Maximum iterations allowed
 	vector<Cluster> clusters; // Stores the clusters
-	
 
 	// ======================================================================
 	// getIDNearestCenter
@@ -342,6 +345,7 @@ public:
 			iter++; // Increment iteration count
 		}
 
+
 		auto end = chrono::high_resolution_clock::now(); // End total execution time
 
 		// Step 3: **Display the final clusters and execution time**
@@ -379,7 +383,7 @@ public:
 		if (iter > 1) // Only compute if we have at least 1 iteration
 		{
 			double avg_time_per_iteration = (double)chrono::duration_cast<chrono::microseconds>(end - end_phase1).count() / iter;
-			cout << "AVERAGE TIME PER ITERATION = " << avg_time_per_iteration << " µs\n";
+			cout << "SERIAL-FAST, AVERAGE TIME PER ITERATION = " << avg_time_per_iteration << " µs\n";
 		}
 	}
 };

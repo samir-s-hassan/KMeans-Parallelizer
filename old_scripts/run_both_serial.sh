@@ -6,11 +6,12 @@ DEFAULT_DATASET="1.txt"
 
 # List of implementations (source file -> executable name)
 IMPLEMENTATIONS=(
-    "kmeans-concurrent.cpp kmeans-concurrent"
     "kmeans-serial-fast.cpp kmeans-serial-fast"
-    "kmeans-parallel.cpp kmeans-parallel"
     "kmeans-serial.cpp kmeans"
 )
+
+# clear the terminal
+clear
 
 # Load the correct GCC module
 module load gcc-11.2.0
@@ -48,13 +49,13 @@ fi
 # Output file for results
 OUTPUT_FILE="kmeans_results.txt"
 echo "Running K-Means Implementations on dataset: $DATASET" > "$OUTPUT_FILE"
+echo ""
 
 # Loop through each implementation
 for IMPL in "${IMPLEMENTATIONS[@]}"; do
     # Split the string into source file and executable name
     read -r SOURCE_FILE EXECUTABLE <<< "$IMPL"
 
-    echo ""
     echo "Compiling $SOURCE_FILE..."
     
     # Check if source file exists
@@ -75,8 +76,8 @@ for IMPL in "${IMPLEMENTATIONS[@]}"; do
     echo "===== Running $EXECUTABLE on: $DATASET ====="
     echo "===== Running $EXECUTABLE on: $DATASET =====" >> "$OUTPUT_FILE"
 
-    # Run K-Means and append results to output file
-    cat "$DATASET" | ./"$EXECUTABLE" 2>&1 | tee -a "$OUTPUT_FILE"
+    # Run K-Means and append results to output file (without terminal output)
+    cat "$DATASET" | ./"$EXECUTABLE" >> "$OUTPUT_FILE" 2>&1
 
     echo "===== $EXECUTABLE Execution Completed! ====="
     echo "===== $EXECUTABLE Execution Completed! =====" >> "$OUTPUT_FILE"
