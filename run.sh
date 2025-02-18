@@ -70,12 +70,19 @@ if [ ${#SELECTED_IMPLEMENTATIONS[@]} -eq 0 ]; then
     SELECTED_IMPLEMENTATIONS=("s")
 fi
 
+# Define the directory for executables
+EXECUTABLE_DIR="executables"
+
 # Loop through selected implementations
 for IMPL in "${SELECTED_IMPLEMENTATIONS[@]}"; do
     read -r SOURCE_FILE EXECUTABLE <<< "${IMPLEMENTATIONS[$IMPL]}"
 
-    # echo "===== Compiling $SOURCE_FILE ====="
-    
+    # Define the path for the executable
+    EXECUTABLE_PATH="./$EXECUTABLE_DIR/$EXECUTABLE"
+
+    # Ensure the directory exists
+    mkdir -p "$EXECUTABLE_DIR"
+
     # Check if source file exists
     if [ ! -f "$SOURCE_FILE" ]; then
         echo "Error: Source file '$SOURCE_FILE' not found! Skipping..."
@@ -83,27 +90,26 @@ for IMPL in "${SELECTED_IMPLEMENTATIONS[@]}"; do
         continue
     fi
 
-    # Compile the implementation
-    g++ -std=c++11 -O3 "$SOURCE_FILE" -o "$EXECUTABLE" -ltbb
+    # Compile the implementation and place the executable in the folder
+    g++ -std=c++11 -O3 "$SOURCE_FILE" -o "$EXECUTABLE_PATH" -ltbb
     if [ $? -ne 0 ]; then
         echo "Compilation failed for $SOURCE_FILE! Skipping..."
         echo "Compilation failed for $SOURCE_FILE! Skipping..." >> "$OUTPUT_FILE"
         continue
     fi
 
-    # echo "===== Running $EXECUTABLE on $DATASET ====="
-    echo "===== Running $EXECUTABLE on $DATASET =====" >> "$OUTPUT_FILE"
-
     # Run K-Means and append results to output file (without terminal output)
-    cat "$DATASET" | ./$EXECUTABLE >> "$OUTPUT_FILE" 2>&1
-
+    echo "===== Running $EXECUTABLE on $DATASET =====" >> "$OUTPUT_FILE"
+    echo "===== Running $EXECUTABLE on $DATASET ====="
+    cat "$DATASET" | "$EXECUTABLE_PATH" >> "$OUTPUT_FILE" 2>&1
+    echo "       $EXECUTABLE Execution Completed!     " >> "$OUTPUT_FILE"
     echo "===== $EXECUTABLE Execution Completed! ====="
-    # echo "===== $EXECUTABLE Execution Completed! =====" >> "$OUTPUT_FILE"
+    echo ""
     echo "" >> "$OUTPUT_FILE"
 done
 
 # ========= PARSING RESULTS & DISPLAYING SUMMARY =========
-echo -e "\n======== Summary of Results ========"
+echo -e "======== Summary of Results ========"
 
 # Read the results file line by line
 IMPLEMENTATION=""

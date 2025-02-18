@@ -383,7 +383,7 @@ public:
 		if (iter > 1) // Only compute if we have at least 1 iteration
 		{
 			double avg_time_per_iteration = (double)chrono::duration_cast<chrono::microseconds>(end - end_phase1).count() / iter;
-			cout << "SERIAL-FAST, AVERAGE TIME PER ITERATION = " << avg_time_per_iteration << " µs\n";
+			cout << "FAST-SERIAL, AVERAGE TIME PER ITERATION = " << avg_time_per_iteration << " µs\n";
 		}
 	}
 };
