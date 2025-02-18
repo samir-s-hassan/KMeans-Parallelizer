@@ -13,9 +13,6 @@ IMPLEMENTATIONS=(
     [p]="kmeans-parallel.cpp kmeans-parallel"
 )
 
-# Clear the terminal
-clear
-
 # Load the correct GCC module
 module load gcc-11.2.0
 
@@ -77,7 +74,7 @@ fi
 for IMPL in "${SELECTED_IMPLEMENTATIONS[@]}"; do
     read -r SOURCE_FILE EXECUTABLE <<< "${IMPLEMENTATIONS[$IMPL]}"
 
-    echo "===== Compiling $SOURCE_FILE ====="
+    # echo "===== Compiling $SOURCE_FILE ====="
     
     # Check if source file exists
     if [ ! -f "$SOURCE_FILE" ]; then
@@ -94,17 +91,62 @@ for IMPL in "${SELECTED_IMPLEMENTATIONS[@]}"; do
         continue
     fi
 
-    echo "===== Running $EXECUTABLE on $DATASET ====="
+    # echo "===== Running $EXECUTABLE on $DATASET ====="
     echo "===== Running $EXECUTABLE on $DATASET =====" >> "$OUTPUT_FILE"
-    
 
     # Run K-Means and append results to output file (without terminal output)
     cat "$DATASET" | ./$EXECUTABLE >> "$OUTPUT_FILE" 2>&1
 
     echo "===== $EXECUTABLE Execution Completed! ====="
-    echo ""
     # echo "===== $EXECUTABLE Execution Completed! =====" >> "$OUTPUT_FILE"
     echo "" >> "$OUTPUT_FILE"
 done
 
-echo "All selected implementations completed. Results saved in $(pwd)/$OUTPUT_FILE"
+# ========= PARSING RESULTS & DISPLAYING SUMMARY =========
+echo -e "\n======== Summary of Results ========"
+
+# Read the results file line by line
+IMPLEMENTATION=""
+AVERAGE_TIME=""
+CLUSTER_VALUES=""
+ITERATIONS=""
+TIME_PHASE_2=""
+
+while IFS= read -r line; do
+    # Detect when a new implementation is being processed
+    if [[ "$line" =~ ^=====.*Running.*on.*$ ]]; then
+        # If we already have data, print it before starting the next one
+        if [[ -n "$IMPLEMENTATION" && -n "$AVERAGE_TIME" && -n "$CLUSTER_VALUES" && -n "$ITERATIONS" && -n "$TIME_PHASE_2" ]]; then
+            echo -e "$IMPLEMENTATION:\n  - Time Phase 2: $TIME_PHASE_2\n  - Iterations: $ITERATIONS\n  - Average Time per Iteration: $AVERAGE_TIME\n  - Final Cluster Values: $CLUSTER_VALUES\n"
+        fi
+        IMPLEMENTATION=$(echo "$line" | awk '{print $3}')
+        AVERAGE_TIME=""
+        CLUSTER_VALUES=""
+        ITERATIONS=""
+        TIME_PHASE_2=""
+    
+    # Extract Time Phase 2
+    elif [[ "$line" =~ TIME\ PHASE\ 2\ = ]]; then
+        TIME_PHASE_2=$(echo "$line" | awk -F' = ' '{print $2}')
+    
+    # Extract Iteration Count (Break in iteration X)
+    elif [[ "$line" =~ Break\ in\ iteration ]]; then
+        ITERATIONS=$(echo "$line" | awk '{print $4}')
+    
+    # Extract Average Time Per Iteration
+    elif [[ "$line" =~ AVERAGE\ TIME\ PER\ ITERATION\ = ]]; then
+        AVERAGE_TIME=$(echo "$line" | awk -F' = ' '{print $2}')
+    
+    # Extract Final Cluster Values (last occurrence)
+    elif [[ "$line" =~ Cluster\ values: ]]; then
+        CLUSTER_VALUES=$(echo "$line" | awk -F': ' '{print $2}')
+    fi
+done < "$OUTPUT_FILE"
+
+# Print the last implementation if it has values
+if [[ -n "$IMPLEMENTATION" && -n "$AVERAGE_TIME" && -n "$CLUSTER_VALUES" && -n "$ITERATIONS" && -n "$TIME_PHASE_2" ]]; then
+    echo -e "$IMPLEMENTATION:\n  - Time Phase 2: $TIME_PHASE_2\n  - Iterations: $ITERATIONS\n  - Average Time per Iteration: $AVERAGE_TIME\n  - Final Cluster Values: $CLUSTER_VALUES\n"
+fi
+
+echo "Full results saved in $(pwd)/$OUTPUT_FILE"
+echo " "

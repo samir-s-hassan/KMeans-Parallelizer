@@ -1,12 +1,12 @@
 Running K-Means Implementations on datasets/1.txt
 
 ===== Running kmeans-serial on datasets/1.txt =====
-Break in iteration 4
+Break in iteration 5
 
 Cluster 1
-Point 5: 3.5 5 
-Point 4: 5 7 
 Point 6: 4.5 5 
+Point 4: 5 7 
+Point 5: 3.5 5 
 Point 7: 3.5 4.5 
 Point 3: 3 4 
 Cluster values: 3.9 5.1 
@@ -16,29 +16,29 @@ Point 1: 1 1
 Point 2: 1.5 2 
 Cluster values: 1.25 1.5 
 
-TOTAL EXECUTION TIME = 8 µs
+TOTAL EXECUTION TIME = 9 µs
 TIME PHASE 1 = 1 µs
-TIME PHASE 2 = 7 µs
-SERIAL, AVERAGE TIME PER ITERATION = 1.75 µs
+TIME PHASE 2 = 8 µs
+SERIAL, AVERAGE TIME PER ITERATION = 1.6 µs
 
 ===== Running kmeans-fast-serial on datasets/1.txt =====
-Break in iteration 4
+Break in iteration 5
 
 Cluster 1
-Point 5: 3.5 5 
-Point 4: 5 7 
-Point 6: 4.5 5 
-Point 7: 3.5 4.5 
-Point 3: 3 4 
-Cluster values: 3.9 5.1 
-
-Cluster 2
 Point 1: 1 1 
 Point 2: 1.5 2 
 Cluster values: 1.25 1.5 
 
-TOTAL EXECUTION TIME = 8 µs
-TIME PHASE 1 = 1 µs
+Cluster 2
+Point 6: 4.5 5 
+Point 4: 5 7 
+Point 5: 3.5 5 
+Point 7: 3.5 4.5 
+Point 3: 3 4 
+Cluster values: 3.9 5.1 
+
+TOTAL EXECUTION TIME = 11 µs
+TIME PHASE 1 = 3 µs
 TIME PHASE 2 = 7 µs
-SERIAL-FAST, AVERAGE TIME PER ITERATION = 1.75 µs
+SERIAL-FAST, AVERAGE TIME PER ITERATION = 1.4 µs
 
