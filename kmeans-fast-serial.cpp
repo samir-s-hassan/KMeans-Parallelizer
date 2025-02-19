@@ -1,13 +1,14 @@
 // Implementation of the KMeans Algorithm
 // reference: https://github.com/marcoscastro/kmeans
 
-#include <iostream>	 // For input and output operations (cin, cout)
-#include <vector>	 // For using dynamic arrays (vectors)
-#include <math.h>	 // For mathematical functions (like pow, sqrt)
-#include <stdlib.h>	 // For random number generation (rand, srand)
-#include <time.h>	 // For setting the seed of rand()
-#include <algorithm> // For utility functions like find()
-#include <chrono>	 // For measuring execution time
+#include <iostream>		 // For input and output operations (cin, cout)
+#include <vector>		 // For using dynamic arrays (vectors)
+#include <math.h>		 // For mathematical functions (like pow, sqrt)
+#include <stdlib.h>		 // For random number generation (rand, srand)
+#include <time.h>		 // For setting the seed of rand()
+#include <algorithm>	 // For utility functions like find()
+#include <chrono>		 // For measuring execution time
+#include <unordered_set> // For faster duplicate checking
 
 using namespace std; // Allows using standard C++ functions without the "std::" prefix
 
@@ -40,10 +41,20 @@ public:
 		this->id_point = id_point;	  // Assigns the point ID
 		total_values = values.size(); // Stores the total number of features
 
-		// Copies the feature values into the point's vector
-		for (int i = 0; i < total_values; i++)
+		//SAMIR - Loop unrolling
+		int i = 0;
+		for (; i + 3 < total_values; i += 4)  // Copy 4 values per loop
+		{
 			this->values.push_back(values[i]);
-
+			this->values.push_back(values[i + 1]);
+			this->values.push_back(values[i + 2]);
+			this->values.push_back(values[i + 3]);
+		}
+		
+		// Handle remaining values
+		for (; i < total_values; i++)
+			this->values.push_back(values[i]);
+		
 		this->name = name; // Assigns the name (if provided)
 		id_cluster = -1;   // Initially, the point is not assigned to any cluster (-1)
 	}
@@ -119,11 +130,11 @@ public:
 	void addPoint(Point point)
 	{
 		if (points.capacity() == 0) // SAMIR - ✅ Only reserve once
-			points.reserve(100); // Adjust based on dataset I am using
-	
-		points.push_back(point); // Efficiently add point
+			points.reserve(50);		// Adjust based on dataset I am using
+									// total points/K is the amount of points in each cluster and we should reserve that amount
+		points.push_back(point);	// Efficiently add point
 	}
-	
+
 	bool removePoint(int id_point)
 	{
 		int total_points = points.size();
@@ -162,6 +173,10 @@ public:
 	int getID()
 	{
 		return id_cluster;
+	}
+	void shrinkPoints()
+	{
+		points.shrink_to_fit(); // SAMIR - ✅ Releases unused capacity
 	}
 };
 
@@ -205,11 +220,30 @@ private:
 		double sum = 0.0, min_dist;
 		int id_cluster_center = 0;
 
+		// for (int i = 0; i < total_values; i++)
+		// { // SAMIR - Replace pow(x, 2.0) with Direct Multiplication
+		// 	double diff = clusters[0].getCentralValue(i) - point.getValue(i);
+		// 	sum += diff * diff; // Faster than pow()
+		// }
+
+		// SAMIR - Loop unrolling
 		// Compute distance to the **first cluster** (used as reference)
-		for (int i = 0; i < total_values; i++)
-		{ // SAMIR - Replace pow(x, 2.0) with Direct Multiplication
-			double diff = clusters[0].getCentralValue(i) - point.getValue(i);
-			sum += diff * diff; // Faster than pow()
+		int j = 0;
+		for (; j + 3 < total_values; j += 4) // Process 4 values per iteration
+		{
+			double diff1 = clusters[0].getCentralValue(j) - point.getValue(j);
+			double diff2 = clusters[0].getCentralValue(j + 1) - point.getValue(j + 1);
+			double diff3 = clusters[0].getCentralValue(j + 2) - point.getValue(j + 2);
+			double diff4 = clusters[0].getCentralValue(j + 3) - point.getValue(j + 3);
+			// SAMIR - Replace pow(x, 2.0) with Direct Multiplication
+			sum += (diff1 * diff1) + (diff2 * diff2) + (diff3 * diff3) + (diff4 * diff4);
+		}
+
+		// Handle remaining values (if total_values % 4 != 0)
+		for (; j < total_values; j++)
+		{
+			double diff = clusters[0].getCentralValue(j) - point.getValue(j);
+			sum += diff * diff;
 		}
 
 		min_dist = sqrt(sum); // Set the first cluster's distance as the minimum
@@ -265,23 +299,17 @@ public:
 		if (K > total_points)
 			return;
 
-		vector<int> prohibited_indexes;
+		unordered_set<int> chosen_indexes; // SAMIR - ✅ Use unordered_set for O(1) lookups
 
-		// Step 1: **Select K initial centroids randomly**
-		for (int i = 0; i < K; i++)
+		// Step 1: **Select K unique initial centroids randomly**
+		while (chosen_indexes.size() < K)
 		{
-			while (true)
-			{
-				int index_point = rand() % total_points;
+			int index_point = rand() % total_points;
 
-				if (find(prohibited_indexes.begin(), prohibited_indexes.end(), index_point) == prohibited_indexes.end())
-				{
-					prohibited_indexes.push_back(index_point);
-					points[index_point].setCluster(i);
-					Cluster cluster(i, points[index_point]);
-					clusters.push_back(cluster);
-					break;
-				}
+			if (chosen_indexes.insert(index_point).second) // SAMIR - ✅ O(1) lookup and insert
+			{
+				points[index_point].setCluster(chosen_indexes.size() - 1);			   // Assign cluster
+				clusters.emplace_back(chosen_indexes.size() - 1, points[index_point]); // ✅ Efficiently construct cluster
 			}
 		}
 
@@ -316,7 +344,7 @@ public:
 
 			// Step 2b: **Recalculate the centroids based on new assignments**
 			for (int i = 0; i < K; i++)
-			{
+			{	// SAMIR - Loop unrolling
 				for (int j = 0; j < total_values; j++)
 				{
 					int total_points_cluster = clusters[i].getTotalPoints();
@@ -324,8 +352,20 @@ public:
 
 					if (total_points_cluster > 0)
 					{
-						for (int p = 0; p < total_points_cluster; p++)
+						int p = 0;
+						for (; p + 3 < total_points_cluster; p += 4) // Unroll loop for every 4 points
+						{
+							sum += clusters[i].getPoint(p).getValue(j) +
+								   clusters[i].getPoint(p + 1).getValue(j) +
+								   clusters[i].getPoint(p + 2).getValue(j) +
+								   clusters[i].getPoint(p + 3).getValue(j);
+						}
+
+						// Handle remaining points
+						for (; p < total_points_cluster; p++)
+						{
 							sum += clusters[i].getPoint(p).getValue(j);
+						}
 
 						clusters[i].setCentralValue(j, sum / total_points_cluster);
 					}
@@ -345,8 +385,12 @@ public:
 			iter++; // Increment iteration count
 		}
 
-
 		auto end = chrono::high_resolution_clock::now(); // End total execution time
+
+		for (int i = 0; i < K; i++)
+		{
+			clusters[i].shrinkPoints(); // SAMIR - ✅ Reduce memory after clustering is done
+		}
 
 		// Step 3: **Display the final clusters and execution time**
 		for (int i = 0; i < K; i++)
