@@ -130,7 +130,7 @@ public:
 		return false;
 	}
 
-	// SAMIR - ✅ Inline small getter functions, 
+	// SAMIR - ✅ Inline small getter functions,
 	// DON'T INLINE:
 	// large functions → Can increase binary size & reduce cache efficiency.
 	// recursive functions → Inline won't work well with recursion.
@@ -185,12 +185,6 @@ private:
 		double sum = 0.0, min_dist;
 		int id_cluster_center = 0;
 
-		// for (int i = 0; i < total_values; i++)
-		// { // SAMIR - Replace pow(x, 2.0) with Direct Multiplication
-		// 	double diff = clusters[0].getCentralValue(i) - point.getValue(i);
-		// 	sum += diff * diff; // Faster than pow()
-		// }
-
 		// SAMIR - Loop unrolling
 		// Compute distance to the **first cluster** (used as reference)
 		int j = 0;
@@ -211,26 +205,24 @@ private:
 			sum += diff * diff;
 		}
 
-		min_dist = sqrt(sum); // Set the first cluster's distance as the minimum
+		min_dist = sum; // SAMIR - Set the first cluster's squared distance as the minimum
 
-		// Compare the distance with other clusters
+		// SAMIR - Compare the Euclidean distance with other clusters
 		for (int i = 1; i < K; i++)
 		{
-			double dist;
 			sum = 0.0;
 
-			// Compute the Euclidean distance for each cluster
+			// Compute the squared Euclidean distance for each cluster
 			for (int j = 0; j < total_values; j++)
 			{
-				sum += pow(clusters[i].getCentralValue(j) - point.getValue(j), 2.0);
+				double diff = clusters[i].getCentralValue(j) - point.getValue(j);
+				sum += diff * diff; // ✅ Use squared difference
 			}
 
-			dist = sqrt(sum); // Compute the final distance
-
-			// If this cluster is closer, update the closest cluster ID
-			if (dist < min_dist)
+			// SAMIR - ✅ No need for sqrt(), just compare squared distances
+			if (sum < min_dist)
 			{
-				min_dist = dist;
+				min_dist = sum;
 				id_cluster_center = i;
 			}
 		}
