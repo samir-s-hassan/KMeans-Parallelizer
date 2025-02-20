@@ -91,7 +91,7 @@ for IMPL in "${SELECTED_IMPLEMENTATIONS[@]}"; do
     fi
 
     # Compile the implementation and place the executable in the folder
-    g++ -std=c++11 -O3 "$SOURCE_FILE" -o "$EXECUTABLE_PATH" -ltbb
+    g++ -std=c++11 -O3 -march=native "$SOURCE_FILE" -o "$EXECUTABLE_PATH" -ltbb
     if [ $? -ne 0 ]; then
         echo "Compilation failed for $SOURCE_FILE! Skipping..."
         echo "Compilation failed for $SOURCE_FILE! Skipping..." >> "$OUTPUT_FILE"
@@ -102,7 +102,7 @@ for IMPL in "${SELECTED_IMPLEMENTATIONS[@]}"; do
     echo "===== Running $EXECUTABLE on $DATASET =====" >> "$OUTPUT_FILE"
     echo "===== Running $EXECUTABLE on $DATASET ====="
     cat "$DATASET" | "$EXECUTABLE_PATH" >> "$OUTPUT_FILE" 2>&1
-    echo "       $EXECUTABLE Execution Completed!     " >> "$OUTPUT_FILE"
+    echo "$EXECUTABLE Execution Completed!" >> "$OUTPUT_FILE"
     echo "===== $EXECUTABLE Execution Completed! ====="
     echo ""
     echo "" >> "$OUTPUT_FILE"
@@ -155,4 +155,25 @@ if [[ -n "$IMPLEMENTATION" && -n "$AVERAGE_TIME" && -n "$CLUSTER_VALUES" && -n "
 fi
 
 echo "Full results saved in $(pwd)/$OUTPUT_FILE"
-echo " "
+
+# ========= GENERATE CLUSTER CSV FILES =========
+
+# Check if gen_clusters.py exists
+GEN_CLUSTER_SCRIPT="generate_csv.py"
+CSV_OUTPUT_DIR="cluster_results"
+
+if [ -f "$GEN_CLUSTER_SCRIPT" ]; then
+    # Run the Python script to generate CSVs
+    python3 "$GEN_CLUSTER_SCRIPT"
+
+    # Check if the CSV files were successfully created
+    if [ -d "$CSV_OUTPUT_DIR" ] && [ "$(ls -A "$CSV_OUTPUT_DIR")" ]; then
+        echo ""
+    else
+        echo "⚠️ Warning: CSV files were not generated! Please check '$GEN_CLUSTER_SCRIPT'."
+    fi
+else
+    echo "❌ Error: '$GEN_CLUSTER_SCRIPT' not found! Please make sure the script exists."
+fi
+
+# ========= FINISH =========
