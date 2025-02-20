@@ -42,20 +42,20 @@ public:
 		total_values = values.size(); // Stores the total number of features
 		// this->values.reserve(total_values); // DOESN'T WORK - ✅ Avoids dynamic resizing
 
-		//SAMIR - Loop unrolling
+		// SAMIR - Loop unrolling
 		int i = 0;
-		for (; i + 3 < total_values; i += 4)  // Copy 4 values per loop
+		for (; i + 3 < total_values; i += 4) // Copy 4 values per loop
 		{
 			this->values.push_back(values[i]);
 			this->values.push_back(values[i + 1]);
 			this->values.push_back(values[i + 2]);
 			this->values.push_back(values[i + 3]);
 		}
-		
+
 		// Handle remaining values
 		for (; i < total_values; i++)
 			this->values.push_back(values[i]);
-		
+
 		this->name = name; // Assigns the name (if provided)
 		id_cluster = -1;   // Initially, the point is not assigned to any cluster (-1)
 	}
@@ -64,47 +64,13 @@ public:
 	// Getter Methods: Retrieve information about the point.
 	// ============================================================================
 
-	// Returns the unique ID of the point
-	int getID()
-	{
-		return id_point;
-	}
-
-	// Assigns the point to a cluster by setting the cluster ID
-	void setCluster(int id_cluster)
-	{
-		this->id_cluster = id_cluster;
-	}
-
-	// Returns the cluster ID that the point is assigned to
-	int getCluster()
-	{
-		return id_cluster;
-	}
-
-	// Returns the feature value at a given index (dimension)
-	double getValue(int index)
-	{
-		return values[index];
-	}
-
-	// Returns the total number of feature values (dimensions)
-	int getTotalValues()
-	{
-		return total_values;
-	}
-
-	// Adds a new feature value to the point (used when modifying points dynamically)
-	void addValue(double value)
-	{
-		values.push_back(value);
-	}
-
-	// Returns the name of the point (if assigned)
-	string getName()
-	{
-		return name;
-	}
+	// SAMIR - ✅ Inline small functions to reduce function call overhead
+	inline int getID() const { return id_point; }
+	inline int getCluster() const { return id_cluster; }
+	inline void setCluster(int id_cluster) { this->id_cluster = id_cluster; }
+	inline double getValue(int index) const { return values[index]; }
+	inline int getTotalValues() const { return total_values; }
+	inline string getName() const { return name; }
 };
 
 class Cluster
@@ -131,15 +97,15 @@ public:
 			central_values.push_back(point.getValue(i + 2));
 			central_values.push_back(point.getValue(i + 3));
 		}
-	
+
 		// Copy remaining feature values
 		for (; i < total_values; i++)
 		{
 			central_values.push_back(point.getValue(i));
 		}
-	
+
 		points.push_back(point);
-		}
+	}
 
 	void addPoint(Point point)
 	{
@@ -164,34 +130,19 @@ public:
 		return false;
 	}
 
-	double getCentralValue(int index)
-	{
-		return central_values[index];
-	}
+	// SAMIR - ✅ Inline small getter functions, 
+	// DON'T INLINE:
+	// large functions → Can increase binary size & reduce cache efficiency.
+	// recursive functions → Inline won't work well with recursion.
+	// virtual functions → Virtual functions use dynamic binding, so inlining doesn't apply.
+	// functions that are rarely called → Inlining them gives no performance benefit.
 
-	void setCentralValue(int index, double value)
-	{
-		central_values[index] = value;
-	}
-
-	Point getPoint(int index)
-	{
-		return points[index];
-	}
-
-	int getTotalPoints()
-	{
-		return points.size();
-	}
-
-	int getID()
-	{
-		return id_cluster;
-	}
-	void shrinkPoints()
-	{
-		points.shrink_to_fit(); // SAMIR - ✅ Releases unused capacity
-	}
+	inline double getCentralValue(int index) const { return central_values[index]; }
+	inline void setCentralValue(int index, double value) { central_values[index] = value; }
+	inline Point getPoint(int index) const { return points[index]; }
+	inline int getTotalPoints() const { return points.size(); }
+	inline int getID() const { return id_cluster; }
+	inline void shrinkPoints() { points.shrink_to_fit(); }
 };
 
 // ==========================================================================
@@ -360,7 +311,7 @@ public:
 
 			// Step 2b: **Recalculate the centroids based on new assignments**
 			for (int i = 0; i < K; i++)
-			{	// SAMIR - Loop unrolling
+			{ // SAMIR - Loop unrolling
 				for (int j = 0; j < total_values; j++)
 				{
 					int total_points_cluster = clusters[i].getTotalPoints();
