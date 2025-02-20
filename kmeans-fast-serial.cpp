@@ -40,6 +40,7 @@ public:
 	{
 		this->id_point = id_point;	  // Assigns the point ID
 		total_values = values.size(); // Stores the total number of features
+		// this->values.reserve(total_values); // DOESN'T WORK - ✅ Avoids dynamic resizing
 
 		//SAMIR - Loop unrolling
 		int i = 0;
@@ -121,16 +122,29 @@ public:
 		int total_values = point.getTotalValues();
 		central_values.reserve(total_values); // SAMIR - ✅ Reserve space for feature values
 
-		for (int i = 0; i < total_values; i++)
+		int i = 0;
+		// SAMIR - Unroll by copying 4 feature values at a time
+		for (; i + 3 < total_values; i += 4)
+		{
 			central_values.push_back(point.getValue(i));
-
+			central_values.push_back(point.getValue(i + 1));
+			central_values.push_back(point.getValue(i + 2));
+			central_values.push_back(point.getValue(i + 3));
+		}
+	
+		// Copy remaining feature values
+		for (; i < total_values; i++)
+		{
+			central_values.push_back(point.getValue(i));
+		}
+	
 		points.push_back(point);
-	}
+		}
 
 	void addPoint(Point point)
 	{
 		if (points.capacity() == 0) // SAMIR - ✅ Only reserve once
-			points.reserve(50);		// Adjust based on dataset I am using
+			points.reserve(50);		// dependent based on dataset I am using
 									// total points/K is the amount of points in each cluster and we should reserve that amount
 		points.push_back(point);	// Efficiently add point
 	}
@@ -301,6 +315,8 @@ public:
 
 		unordered_set<int> chosen_indexes; // SAMIR - ✅ Use unordered_set for O(1) lookups
 
+		clusters.reserve(K); // SAMIR - ✅ Reserve memory for K clusters to avoid dynamic resizing
+
 		// Step 1: **Select K unique initial centroids randomly**
 		while (chosen_indexes.size() < K)
 		{
@@ -309,7 +325,7 @@ public:
 			if (chosen_indexes.insert(index_point).second) // SAMIR - ✅ O(1) lookup and insert
 			{
 				points[index_point].setCluster(chosen_indexes.size() - 1);			   // Assign cluster
-				clusters.emplace_back(chosen_indexes.size() - 1, points[index_point]); // ✅ Efficiently construct cluster
+				clusters.emplace_back(chosen_indexes.size() - 1, points[index_point]); // SAMIR - ✅ Efficiently construct cluster
 			}
 		}
 
