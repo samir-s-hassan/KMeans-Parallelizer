@@ -12,7 +12,7 @@ IMPLEMENTATIONS=(
     [c]="src/kmeans-concurrent.cpp kmeans-concurrent"
     [p]="src/kmeans-parallel.cpp kmeans-parallel"
     [n]="src/kmeans-nasn-serial.cpp kmeans-nasn-serial"
-    [fn]="src/kmeans-nasn-fast-serial.cpp kmeans-nasn-fast-serial"
+    [l]="src/kmeans-lightning-serial.cpp kmeans-lightning-serial"
 )
 
 # Load the correct GCC module
