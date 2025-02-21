@@ -12,6 +12,7 @@ IMPLEMENTATIONS=(
     [c]="src/kmeans-concurrent.cpp kmeans-concurrent"
     [p]="src/kmeans-parallel.cpp kmeans-parallel"
     [n]="src/kmeans-nasn-serial.cpp kmeans-nasn-serial"
+    [fn]="src/kmeans-nasn-fast-serial.cpp kmeans-nasn-fast-serial"
 )
 
 # Load the correct GCC module
@@ -163,7 +164,7 @@ if [ -f "$GEN_CLUSTER_SCRIPT" ]; then
     python3 "$GEN_CLUSTER_SCRIPT"
     
     if [ -d "$CSV_OUTPUT_DIR" ] && [ "$(ls -A "$CSV_OUTPUT_DIR")" ]; then
-        echo "CSV files successfully generated in $CSV_OUTPUT_DIR"
+        echo ""
     else
         echo "⚠️ Warning: CSV files were not generated! Please check '$GEN_CLUSTER_SCRIPT'."
     fi
