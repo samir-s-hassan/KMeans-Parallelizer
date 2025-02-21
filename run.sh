@@ -20,6 +20,8 @@ IMPLEMENTATIONS=(
     [p]="src/parallel.cpp parallel"
     [n]="src/na-serial.cpp na-serial"
     [l]="src/lightning-serial.cpp lightning-serial"
+    [a]="src/a-parallel.cpp a-parallel"
+    [b]="src/b-parallel.cpp b-parallel"
 )
 
 # Initialize the module system
@@ -101,7 +103,7 @@ for IMPL in "${SELECTED_IMPLEMENTATIONS[@]}"; do
     fi
 
     # Compile the implementation and place the executable in the folder
-    if [ "$IMPL" == "p" ]; then
+    if [[ "$IMPL" == "p" || "$IMPL" == "a" || "$IMPL" == "b" ]]; then
         g++ -std=c++11 -O3 -march=native \
             -I$TBBROOT/include \
             -L$TBBROOT/lib/intel64/gcc4.8 \

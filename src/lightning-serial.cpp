@@ -1,3 +1,11 @@
+// Implementation of the KMeans Algorithm
+// reference: https://github.com/marcoscastro/kmeans
+
+// SUMMARY
+// This optimized K-Means implementation enhances both performance and memory efficiency by eliminating per-cluster point storage, maintaining only centroid values, and recalculating centroids using aggregate sums.
+// Additional optimizations include loop unrolling for faster computations, an unordered set for O(1) centroid selection, direct multiplication instead of `pow(x, 2.0)`, avoiding `sqrt()` in distance comparisons, and preallocating memory to minimize dynamic resizing overhead.
+// Samir's code
+
 #include <iostream>
 #include <vector>
 #include <math.h>
@@ -312,7 +320,7 @@ public:
         if (iter > 1) // Only compute if we have at least 1 iteration
         {
             double avg_time_per_iteration = (double)chrono::duration_cast<chrono::microseconds>(end - end_phase1).count() / iter;
-            cout << "NASN-SERIAL, AVERAGE TIME PER ITERATION = " << avg_time_per_iteration << " µs\n";
+            cout << "LIGHTNING-SERIAL, AVERAGE TIME PER ITERATION = " << avg_time_per_iteration << " µs\n";
         }
     }
 };
@@ -320,7 +328,8 @@ public:
 int main(int argc, char *argv[])
 {
     // Seed the random number generator (for selecting initial centroids randomly)
-    srand(time(NULL));
+    // srand(time(NULL));
+    srand(42); // Use a fixed seed value before generating random centroids
 
     int total_points, total_values, K, max_iterations, has_name;
 

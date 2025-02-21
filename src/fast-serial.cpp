@@ -1,6 +1,12 @@
 // Implementation of the KMeans Algorithm
 // reference: https://github.com/marcoscastro/kmeans
 
+// SUMMARY
+// This optimized K-Means implementation improves the baseline by reducing redundant computations, using loop unrolling, avoiding unnecessary function calls, and leveraging memory optimizations (e.g., `reserve()`, `shrink_to_fit()`, `unordered_set`). 
+// Additional improvements include replacing `pow(x, 2.0)` with direct multiplication, avoiding unnecessary `sqrt()` calculations, and using `emplace_back()` for efficiency in vector operations. 
+// Samir's code
+
+
 #include <iostream>		 // For input and output operations (cin, cout)
 #include <vector>		 // For using dynamic arrays (vectors)
 #include <math.h>		 // For mathematical functions (like pow, sqrt)

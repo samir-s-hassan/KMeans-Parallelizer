@@ -1,96 +1,72 @@
-//Professor Palmieri's code (only change is adding Average Time Per Iteration metric)
-
 // Implementation of the KMeans Algorithm
 // reference: https://github.com/marcoscastro/kmeans
 
-#include <iostream>	 // For input and output operations (cin, cout)
-#include <vector>	 // For using dynamic arrays (vectors)
-#include <math.h>	 // For mathematical functions (like pow, sqrt)
-#include <stdlib.h>	 // For random number generation (rand, srand)
-#include <time.h>	 // For setting the seed of rand()
-#include <algorithm> // For utility functions like find()
-#include <chrono>	 // For measuring execution time
+// SUMMARY
+// This is the **baseline implementation** of the K-Means clustering algorithm, measuring execution time and average time per iteration.
+// It initializes clusters randomly, assigns points based on Euclidean distance, recalculates centroids iteratively, and stops upon convergence or reaching the maximum iterations.
+// Professor Palmieri's code (only change is adding Average Time Per Iteration metric)
 
-using namespace std; // Allows using standard C++ functions without the "std::" prefix
+#include <iostream>
+#include <vector>
+#include <math.h>
+#include <stdlib.h>
+#include <time.h>
+#include <algorithm>
+#include <chrono>
 
-// ============================================================================
-//                              Point Class
-// ============================================================================
-// This class represents a **single data point** in the dataset.
-// Each point contains:
-//   - A unique **ID** (`id_point`) for identification
-//   - A **vector of values** (`values`), which represents feature values
-//   - The **total number of feature values** (`total_values`)
-//   - A **cluster assignment** (`id_cluster`) to track which cluster it belongs to
-//   - An **optional name** (`name`) for identification (e.g., labeling points)
+using namespace std;
 
 class Point
 {
 private:
-	int id_point;		   // Unique identifier for the point
-	int id_cluster;		   // ID of the cluster this point is assigned to
-	vector<double> values; // Stores the feature values of the point
-	int total_values;	   // Number of features (dimensions) for this point
-	string name;		   // Optional name of the point (default: empty)
+	int id_point, id_cluster;
+	vector<double> values;
+	int total_values;
+	string name;
 
 public:
-	// ============================================================================
-	// Constructor: Initializes a point with an ID, feature values, and an optional name.
-	// ============================================================================
 	Point(int id_point, vector<double> &values, string name = "")
 	{
-		this->id_point = id_point;	  // Assigns the point ID
-		total_values = values.size(); // Stores the total number of features
+		this->id_point = id_point;
+		total_values = values.size();
 
-		// Copies the feature values into the point's vector
 		for (int i = 0; i < total_values; i++)
 			this->values.push_back(values[i]);
 
-		this->name = name; // Assigns the name (if provided)
-		id_cluster = -1;   // Initially, the point is not assigned to any cluster (-1)
+		this->name = name;
+		id_cluster = -1;
 	}
 
-	// ============================================================================
-	// Getter Methods: Retrieve information about the point.
-	// ============================================================================
-
-	// Returns the unique ID of the point
 	int getID()
 	{
 		return id_point;
 	}
 
-	// Assigns the point to a cluster by setting the cluster ID
 	void setCluster(int id_cluster)
 	{
 		this->id_cluster = id_cluster;
 	}
 
-	// Returns the cluster ID that the point is assigned to
 	int getCluster()
 	{
 		return id_cluster;
 	}
 
-	// Returns the feature value at a given index (dimension)
 	double getValue(int index)
 	{
 		return values[index];
 	}
 
-	// Returns the total number of feature values (dimensions)
 	int getTotalValues()
 	{
 		return total_values;
 	}
 
-	// Adds a new feature value to the point (used when modifying points dynamically)
 	void addValue(double value)
 	{
 		values.push_back(value);
 	}
 
-	// Returns the name of the point (if assigned)
 	string getName()
 	{
 		return name;
@@ -163,69 +139,42 @@ public:
 	}
 };
 
-// ==========================================================================
-//                              KMeans Class
-// ==========================================================================
-// This class implements the K-Means clustering algorithm. It follows these steps:
-// 1. **Initialize K clusters** by randomly selecting K data points as initial centroids.
-// 2. **Assign each data point** to the nearest centroid.
-// 3. **Recalculate the centroids** based on the mean of assigned points.
-// 4. **Repeat** until either:
-//    - The cluster assignments do not change (convergence).
-//    - The maximum number of iterations is reached.
-//
-// The class includes methods for finding the nearest cluster center, running
-// the clustering process, and displaying the results.
-
 class KMeans
 {
 private:
-	int K;					  // Number of clusters
-	int total_values;		  // Number of features per data point
-	int total_points;		  // Total number of data points
-	int max_iterations;		  // Maximum iterations allowed
-	vector<Cluster> clusters; // Stores the clusters
+	int K; // number of clusters
+	int total_values, total_points, max_iterations;
+	vector<Cluster> clusters;
 
-	// ======================================================================
-	// getIDNearestCenter
-	// ======================================================================
-	// Finds the **nearest cluster** to a given data point using **Euclidean distance**.
-	// Returns the index of the closest cluster.
-	//
-	// The Euclidean distance formula:
-	//    distance = sqrt((x1 - x2)^2 + (y1 - y2)^2 + ... + (n1 - n2)^2)
-	//
-	// It calculates the distance between the given point and each cluster centroid,
-	// then selects the closest one.
-	// ======================================================================
+	// return ID of nearest center (uses euclidean distance)
 	int getIDNearestCenter(Point point)
 	{
 		double sum = 0.0, min_dist;
 		int id_cluster_center = 0;
 
-		// Compute distance to the **first cluster** (used as reference)
 		for (int i = 0; i < total_values; i++)
 		{
-			sum += pow(clusters[0].getCentralValue(i) - point.getValue(i), 2.0);
+			sum += pow(clusters[0].getCentralValue(i) -
+						   point.getValue(i),
+					   2.0);
 		}
 
-		min_dist = sqrt(sum); // Set the first cluster's distance as the minimum
+		min_dist = sqrt(sum);
 
-		// Compare the distance with other clusters
 		for (int i = 1; i < K; i++)
 		{
 			double dist;
 			sum = 0.0;
 
-			// Compute the Euclidean distance for each cluster
 			for (int j = 0; j < total_values; j++)
 			{
-				sum += pow(clusters[i].getCentralValue(j) - point.getValue(j), 2.0);
+				sum += pow(clusters[i].getCentralValue(j) -
+							   point.getValue(j),
+						   2.0);
 			}
 
-			dist = sqrt(sum); // Compute the final distance
+			dist = sqrt(sum);
 
-			// If this cluster is closer, update the closest cluster ID
 			if (dist < min_dist)
 			{
 				min_dist = dist;
@@ -233,13 +182,10 @@ private:
 			}
 		}
 
-		return id_cluster_center; // Return the nearest cluster index
+		return id_cluster_center;
 	}
 
 public:
-	// ======================================================================
-	// Constructor: Initializes the KMeans object with the required parameters.
-	// ======================================================================
 	KMeans(int K, int total_points, int total_values, int max_iterations)
 	{
 		this->K = K;
@@ -248,30 +194,24 @@ public:
 		this->max_iterations = max_iterations;
 	}
 
-	// ======================================================================
-	// run
-	// ======================================================================
-	// Executes the **K-Means clustering algorithm**.
-	// It initializes the clusters, assigns points, recalculates centroids,
-	// and stops when convergence is reached or the max iterations are exceeded.
-	// ======================================================================
 	void run(vector<Point> &points)
 	{
-		auto begin = chrono::high_resolution_clock::now(); // Start total time measurement
+		auto begin = chrono::high_resolution_clock::now();
 
 		if (K > total_points)
 			return;
 
 		vector<int> prohibited_indexes;
 
-		// Step 1: **Select K initial centroids randomly**
+		// choose K distinct values for the centers of the clusters
 		for (int i = 0; i < K; i++)
 		{
 			while (true)
 			{
 				int index_point = rand() % total_points;
 
-				if (find(prohibited_indexes.begin(), prohibited_indexes.end(), index_point) == prohibited_indexes.end())
+				if (find(prohibited_indexes.begin(), prohibited_indexes.end(),
+						 index_point) == prohibited_indexes.end())
 				{
 					prohibited_indexes.push_back(index_point);
 					points[index_point].setCluster(i);
@@ -281,20 +221,15 @@ public:
 				}
 			}
 		}
-
-		auto end_phase1 = chrono::high_resolution_clock::now(); // End of initialization phase
+		auto end_phase1 = chrono::high_resolution_clock::now();
 
 		int iter = 1;
-		long long total_iteration_time = 0; // Store cumulative iteration time
 
-		// Step 2: **Iterate until convergence or max_iterations reached**
 		while (true)
 		{
-			auto iteration_start = chrono::high_resolution_clock::now(); // Start iteration time
+			bool done = true;
 
-			bool done = true; // Track whether clusters have stabilized
-
-			// Step 2a: **Assign each point to the nearest cluster**
+			// associates each point to the nearest center
 			for (int i = 0; i < total_points; i++)
 			{
 				int id_old_cluster = points[i].getCluster();
@@ -311,7 +246,7 @@ public:
 				}
 			}
 
-			// Step 2b: **Recalculate the centroids based on new assignments**
+			// recalculating the center of each cluster
 			for (int i = 0; i < K; i++)
 			{
 				for (int j = 0; j < total_values; j++)
@@ -323,28 +258,22 @@ public:
 					{
 						for (int p = 0; p < total_points_cluster; p++)
 							sum += clusters[i].getPoint(p).getValue(j);
-
 						clusters[i].setCentralValue(j, sum / total_points_cluster);
 					}
 				}
 			}
 
-			auto iteration_end = chrono::high_resolution_clock::now();													  // End iteration time
-			total_iteration_time += chrono::duration_cast<chrono::microseconds>(iteration_end - iteration_start).count(); // Accumulate iteration time
-
-			// Step 2c: **Check stopping conditions**
 			if (done == true || iter >= max_iterations)
 			{
 				cout << "Break in iteration " << iter << "\n\n";
 				break;
 			}
 
-			iter++; // Increment iteration count
+			iter++;
 		}
+		auto end = chrono::high_resolution_clock::now();
 
-		auto end = chrono::high_resolution_clock::now(); // End total execution time
-
-		// Step 3: **Display the final clusters and execution time**
+		// shows elements of clusters
 		for (int i = 0; i < K; i++)
 		{
 			int total_points_cluster = clusters[i].getTotalPoints();
@@ -357,6 +286,7 @@ public:
 					cout << clusters[i].getPoint(j).getValue(p) << " ";
 
 				string point_name = clusters[i].getPoint(j).getName();
+
 				if (point_name != "")
 					cout << "- " << point_name;
 
@@ -364,83 +294,42 @@ public:
 			}
 
 			cout << "Cluster values: ";
+
 			for (int j = 0; j < total_values; j++)
 				cout << clusters[i].getCentralValue(j) << " ";
 
 			cout << "\n\n";
-		}
+			cout << "TOTAL EXECUTION TIME = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "\n";
 
-		// Display execution time breakdown
-		cout << "TOTAL EXECUTION TIME = " << chrono::duration_cast<chrono::microseconds>(end - begin).count() << " µs\n";
-		cout << "TIME PHASE 1 = " << chrono::duration_cast<chrono::microseconds>(end_phase1 - begin).count() << " µs\n";
-		cout << "TIME PHASE 2 = " << chrono::duration_cast<chrono::microseconds>(end - end_phase1).count() << " µs\n";
+			cout << "TIME PHASE 1 = " << std::chrono::duration_cast<std::chrono::microseconds>(end_phase1 - begin).count() << "\n";
 
-		// Calculate and display the **average time per iteration**
-		if (iter > 1) // Only compute if we have at least 1 iteration
-		{
-			double avg_time_per_iteration = (double)chrono::duration_cast<chrono::microseconds>(end - end_phase1).count() / iter;
-			cout << "SERIAL, AVERAGE TIME PER ITERATION = " << avg_time_per_iteration << " µs\n";
+			cout << "TIME PHASE 2 = " << std::chrono::duration_cast<std::chrono::microseconds>(end - end_phase1).count() << "\n";
+
+			// Calculate and display the **average time per iteration**
+			if (iter > 1) // Only compute if we have at least 1 iteration
+			{
+				double avg_time_per_iteration = (double)chrono::duration_cast<chrono::microseconds>(end - end_phase1).count() / iter;
+				cout << "SERIAL, AVERAGE TIME PER ITERATION = " << avg_time_per_iteration << " µs\n";
+			}
 		}
 	}
 };
 
-// ==========================================================================
-//                              Main Function
-// ==========================================================================
-// The `main` function is responsible for:
-// 1. **Reading user input** to get the number of points, features, clusters, etc.
-// 2. **Initializing data points** by storing feature values.
-// 3. **Running the K-Means clustering algorithm** with the given parameters.
-//
-// The program expects input from standard input (cin) in the following format:
-//    total_points total_values K max_iterations has_name
-//    value1 value2 ... valueN [optional: name]
-//    value1 value2 ... valueN [optional: name]
-//    ...
-//
-// Example input format (if has_name = 1):
-//    5 2 2 100 1
-//    1.0 2.0 PointA
-//    3.0 4.0 PointB
-//    5.0 6.0 PointC
-//    7.0 8.0 PointD
-//    9.0 10.0 PointE
-//
-// Example input format (if has_name = 0):
-//    5 2 2 100 0
-//    1.0 2.0
-//    3.0 4.0
-//    5.0 6.0
-//    7.0 8.0
-//    9.0 10.0
-// ==========================================================================
 int main(int argc, char *argv[])
 {
-	// Seed the random number generator (for selecting initial centroids randomly)
-	srand(time(NULL));
+	srand(42);
 
 	int total_points, total_values, K, max_iterations, has_name;
 
-	// ==========================================================================
-	// Step 1: Read Input Values
-	// ==========================================================================
-	// Read the total number of data points, the number of features per point,
-	// the number of clusters (K), the maximum number of iterations, and whether
-	// each point has a name.
 	cin >> total_points >> total_values >> K >> max_iterations >> has_name;
 
-	// Declare a vector to store all points in the dataset
 	vector<Point> points;
-	string point_name; // To store the optional name of the point
+	string point_name;
 
-	// ==========================================================================
-	// Step 2: Read Points from Input
-	// ==========================================================================
 	for (int i = 0; i < total_points; i++)
 	{
-		vector<double> values; // Store feature values of the current point
+		vector<double> values;
 
-		// Read the feature values for the current point
 		for (int j = 0; j < total_values; j++)
 		{
 			double value;
@@ -448,31 +337,21 @@ int main(int argc, char *argv[])
 			values.push_back(value);
 		}
 
-		// If the points have names, read and store the name
 		if (has_name)
 		{
 			cin >> point_name;
-			Point p(i, values, point_name); // Create a Point with a name
-			points.push_back(p);			// Store the point in the dataset
+			Point p(i, values, point_name);
+			points.push_back(p);
 		}
 		else
 		{
-			Point p(i, values);	 // Create a Point without a name
-			points.push_back(p); // Store the point in the dataset
+			Point p(i, values);
+			points.push_back(p);
 		}
 	}
 
-	// ==========================================================================
-	// Step 3: Initialize K-Means Algorithm and Run Clustering
-	// ==========================================================================
-	// Create an instance of KMeans with the input parameters
 	KMeans kmeans(K, total_points, total_values, max_iterations);
-
-	// Run the K-Means algorithm on the dataset
 	kmeans.run(points);
 
-	// ==========================================================================
-	// Step 4: Exit Program
-	// ==========================================================================
-	return 0; // Return 0 to indicate successful execution
+	return 0;
 }
