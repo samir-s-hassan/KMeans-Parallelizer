@@ -7,6 +7,10 @@
 #include <chrono>
 #include <unordered_set>
 #include <tbb/parallel_for.h>
+#include <atomic> //not used
+#include <tbb/blocked_range.h> //not used
+
+
 
 using namespace std;
 
@@ -201,15 +205,18 @@ public:
 			auto iteration_start = chrono::high_resolution_clock::now();
 			bool done = true;
 
-			tbb::parallel_for(0, total_points, [&](int i)
-							  {
+			// Step 2a: **Assign each point to the nearest cluster**
+			for (int i = 0; i < total_points; i++)
+			{
 				int id_old_cluster = points[i].getCluster();
 				int id_nearest_center = getIDNearestCenter(points[i]);
-			
-				if (id_old_cluster != id_nearest_center) {
+
+				if (id_old_cluster != id_nearest_center)
+				{
 					points[i].setCluster(id_nearest_center);
 					done = false;
-				} });
+				}
+			}
 
 			// Step 2b: **Recalculate centroids based on new assignments**
 			vector<vector<double>> new_centroids(K, vector<double>(total_values, 0.0));
