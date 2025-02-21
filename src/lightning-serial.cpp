@@ -218,14 +218,13 @@ public:
             vector<int> cluster_sizes(K, 0);
 
             // Sum all point values for each cluster
-            // SAMIR - Loop unrolling
             for (int i = 0; i < total_points; i++)
             {
                 int cluster_id = points[i].getCluster();
                 cluster_sizes[cluster_id]++;
 
                 int j = 0;
-                // Unrolling loop by 4 for better memory and cache efficiency
+                // SAMIR - Loop unrolling
                 for (; j + 3 < total_values; j += 4)
                 {
                     new_centroids[cluster_id][j] += points[i].getValue(j);

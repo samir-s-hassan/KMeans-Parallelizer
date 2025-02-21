@@ -164,7 +164,7 @@ if [[ -n "$IMPLEMENTATION" && -n "$AVERAGE_TIME" && -n "$CLUSTER_VALUES" && -n "
     echo -e "$IMPLEMENTATION:\n  - Time Phase 2: $TIME_PHASE_2\n  - Iterations: $ITERATIONS\n  - Average Time per Iteration: $AVERAGE_TIME\n  - Final Cluster Values: $CLUSTER_VALUES\n"
 fi
 
-echo "Full results saved in $(pwd)/$OUTPUT_FILE"
+echo "✅ Full results saved in $(pwd)/$OUTPUT_FILE"
 
 # ========= GENERATE CLUSTER CSV FILES =========
 GEN_CLUSTER_SCRIPT="generate_csv.py"
