@@ -204,7 +204,7 @@ public:
 			auto iteration_start = chrono::high_resolution_clock::now();
 			// Use an atomic variable for convergence detection
 			std::atomic<bool> done(true);
-            // Step 2a: **Assign each point to the nearest cluster**, SAMIR, parallelization, 4*
+			// Step 2a: **Assign each point to the nearest cluster**, SAMIR, parallelization, 4*
 			tbb::parallel_for(
 				tbb::blocked_range<int>(0, total_points),
 				[&](const tbb::blocked_range<int> &range)
@@ -223,56 +223,89 @@ public:
 				});
 
 			// Step 2b: **Recalculate centroids based on new assignments**
+			// Global accumulators for new centroids and cluster sizes
 			vector<vector<double>> new_centroids(K, vector<double>(total_values, 0.0));
 			vector<int> cluster_sizes(K, 0);
 
-			// Sum all point values for each cluster
-			for (int i = 0; i < total_points; i++)
+			// Step 2b.1: Thread-local storage for safe accumulation without race conditions
+			tbb::enumerable_thread_specific<vector<vector<double>>> local_sums;
+			tbb::enumerable_thread_specific<vector<int>> local_counts;
+
+			// Step 2b.2: Parallel Accumulation of Centroids using Thread-Local Storage
+			tbb::parallel_for(tbb::blocked_range<size_t>(0, points.size()), [&](const tbb::blocked_range<size_t> &r)
+							  {
+			// Each thread gets a local copy of centroid accumulators and cluster sizes
+			auto &local_centroids = local_sums.local();
+			auto &local_cluster_sizes = local_counts.local();
+
+			// Allocate memory for local storage only when needed
+			if (local_centroids.empty()) {
+				local_centroids.resize(K, vector<double>(total_values, 0.0));
+				local_cluster_sizes.resize(K, 0);
+			}
+
+			// Iterate over a subset of points assigned to this thread
+			for (size_t i = r.begin(); i < r.end(); ++i)
 			{
-				int cluster_id = points[i].getCluster();
-				cluster_sizes[cluster_id]++;
+				int cluster_id = points[i].getCluster(); // Get assigned cluster
+				local_cluster_sizes[cluster_id]++;       // Count points in each cluster
 
 				int j = 0;
-				// SAMIR - Loop unrolling
+				// Use **loop unrolling** for better cache utilization
 				for (; j + 3 < total_values; j += 4)
 				{
-					new_centroids[cluster_id][j] += points[i].getValue(j);
-					new_centroids[cluster_id][j + 1] += points[i].getValue(j + 1);
-					new_centroids[cluster_id][j + 2] += points[i].getValue(j + 2);
-					new_centroids[cluster_id][j + 3] += points[i].getValue(j + 3);
+					local_centroids[cluster_id][j] += points[i].getValue(j);
+					local_centroids[cluster_id][j + 1] += points[i].getValue(j + 1);
+					local_centroids[cluster_id][j + 2] += points[i].getValue(j + 2);
+					local_centroids[cluster_id][j + 3] += points[i].getValue(j + 3);
 				}
 
-				// Handle remaining values (if total_values is not a multiple of 4)
+				// Handle remaining feature values
 				for (; j < total_values; j++)
 				{
-					new_centroids[cluster_id][j] += points[i].getValue(j);
+					local_centroids[cluster_id][j] += points[i].getValue(j);
 				}
-			}
+			} });
 
-			// Compute the new centroid values
-			for (int i = 0; i < K; i++)
+			// Step 2b.3: Merge Thread-Local Results into Global Accumulators
+			tbb::parallel_for(0, K, [&](int i)
+							  {
+			for (const auto &local_centroids : local_sums)
 			{
-				if (cluster_sizes[i] > 0)
+				for (int j = 0; j < total_values; j++)
 				{
-					int j = 0;
-					double inv_cluster_size = 1.0 / cluster_sizes[i]; // Precompute division
-
-					// SAMIR - Loop unrolling
-					for (; j + 3 < total_values; j += 4)
-					{
-						clusters[i].setCentralValue(j, new_centroids[i][j] * inv_cluster_size);
-						clusters[i].setCentralValue(j + 1, new_centroids[i][j + 1] * inv_cluster_size);
-						clusters[i].setCentralValue(j + 2, new_centroids[i][j + 2] * inv_cluster_size);
-						clusters[i].setCentralValue(j + 3, new_centroids[i][j + 3] * inv_cluster_size);
-					}
-
-					// Handle remaining values
-					for (; j < total_values; j++)
-					{
-						clusters[i].setCentralValue(j, new_centroids[i][j] * inv_cluster_size);
-					}
+					new_centroids[i][j] += local_centroids[i][j];
 				}
 			}
+
+			for (const auto &local_cluster_sizes : local_counts)
+			{
+				cluster_sizes[i] += local_cluster_sizes[i];
+			} });
+
+			// Step 2b.4: Compute the New Centroid Positions (Parallelized)
+			tbb::parallel_for(0, K, [&](int i)
+							  {
+			if (cluster_sizes[i] > 0)
+			{
+				double inv_cluster_size = 1.0 / cluster_sizes[i]; // Precompute division
+
+				int j = 0;
+				// Loop unrolling for performance optimization
+				for (; j + 3 < total_values; j += 4)
+				{
+					clusters[i].setCentralValue(j, new_centroids[i][j] * inv_cluster_size);
+					clusters[i].setCentralValue(j + 1, new_centroids[i][j + 1] * inv_cluster_size);
+					clusters[i].setCentralValue(j + 2, new_centroids[i][j + 2] * inv_cluster_size);
+					clusters[i].setCentralValue(j + 3, new_centroids[i][j + 3] * inv_cluster_size);
+				}
+
+				// Handle remaining feature values
+				for (; j < total_values; j++)
+				{
+					clusters[i].setCentralValue(j, new_centroids[i][j] * inv_cluster_size);
+				}
+			} });
 
 			auto iteration_end = chrono::high_resolution_clock::now();
 			total_iteration_time += chrono::duration_cast<chrono::microseconds>(iteration_end - iteration_start).count();
