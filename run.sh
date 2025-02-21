@@ -4,14 +4,14 @@
 DATASET_DIR="datasets"
 DEFAULT_DATASET="1.txt"
 
-# Define implementation mappings
+# Define implementation mappings (Pointing to src/)
 declare -A IMPLEMENTATIONS
 IMPLEMENTATIONS=(
-    [s]="kmeans-serial.cpp kmeans-serial"
-    [f]="kmeans-fast-serial.cpp kmeans-fast-serial"
-    [c]="kmeans-concurrent.cpp kmeans-concurrent"
-    [p]="kmeans-parallel.cpp kmeans-parallel"
-    [n]="kmeans-nasn-serial.cpp kmeans-nasn-serial"
+    [s]="src/kmeans-serial.cpp kmeans-serial"
+    [f]="src/kmeans-fast-serial.cpp kmeans-fast-serial"
+    [c]="src/kmeans-concurrent.cpp kmeans-concurrent"
+    [p]="src/kmeans-parallel.cpp kmeans-parallel"
+    [n]="src/kmeans-nasn-serial.cpp kmeans-nasn-serial"
 )
 
 # Load the correct GCC module
@@ -47,12 +47,10 @@ done
 # Use default dataset if none was provided
 if [ -z "$DATASET" ]; then
     echo "No dataset file provided. Using default dataset: $DEFAULT_DATASET"
-    echo ""
     DATASET="$DATASET_DIR/$DEFAULT_DATASET"
 else
     DATASET="$DATASET_DIR/$DATASET"
     echo "Using dataset: $DATASET"
-    echo ""
 fi
 
 # Check if the dataset file exists
@@ -63,7 +61,7 @@ fi
 
 # Output file for results (overwrite file at the start)
 OUTPUT_FILE="results.txt"
-echo "Running K-Means Implementations on $DATASET" > "$OUTPUT_FILE"  # Use '>' instead of '>>'
+echo "Running K-Means Implementations on $DATASET" > "$OUTPUT_FILE"
 echo "" >> "$OUTPUT_FILE"
 
 # If no valid implementations were provided, default to serial (s)
@@ -71,8 +69,11 @@ if [ ${#SELECTED_IMPLEMENTATIONS[@]} -eq 0 ]; then
     SELECTED_IMPLEMENTATIONS=("s")
 fi
 
-# Define the directory for executables
+# Define directories
 EXECUTABLE_DIR="executables"
+
+# Ensure executables directory exists
+mkdir -p "$EXECUTABLE_DIR"
 
 # Loop through selected implementations
 for IMPL in "${SELECTED_IMPLEMENTATIONS[@]}"; do
@@ -81,10 +82,7 @@ for IMPL in "${SELECTED_IMPLEMENTATIONS[@]}"; do
     # Define the path for the executable
     EXECUTABLE_PATH="./$EXECUTABLE_DIR/$EXECUTABLE"
 
-    # Ensure the directory exists
-    mkdir -p "$EXECUTABLE_DIR"
-
-    # Check if source file exists
+    # Check if source file exists in src/
     if [ ! -f "$SOURCE_FILE" ]; then
         echo "Error: Source file '$SOURCE_FILE' not found! Skipping..."
         echo "Error: Source file '$SOURCE_FILE' not found! Skipping..." >> "$OUTPUT_FILE"
@@ -99,7 +97,7 @@ for IMPL in "${SELECTED_IMPLEMENTATIONS[@]}"; do
         continue
     fi
 
-    # Run K-Means and append results to output file (without terminal output)
+    # Run K-Means and append results to output file
     echo "===== Running $EXECUTABLE on $DATASET =====" >> "$OUTPUT_FILE"
     echo "===== Running $EXECUTABLE on $DATASET ====="
     cat "$DATASET" | "$EXECUTABLE_PATH" >> "$OUTPUT_FILE" 2>&1
@@ -122,7 +120,7 @@ TIME_PHASE_2=""
 while IFS= read -r line; do
     # Detect when a new implementation is being processed
     if [[ "$line" =~ ^=====.*Running.*on.*$ ]]; then
-        # If we already have data, print it before starting the next one
+        # Print previous implementation details if available
         if [[ -n "$IMPLEMENTATION" && -n "$AVERAGE_TIME" && -n "$CLUSTER_VALUES" && -n "$ITERATIONS" && -n "$TIME_PHASE_2" ]]; then
             echo -e "$IMPLEMENTATION:\n  - Time Phase 2: $TIME_PHASE_2\n  - Iterations: $ITERATIONS\n  - Average Time per Iteration: $AVERAGE_TIME\n  - Final Cluster Values: $CLUSTER_VALUES\n"
         fi
@@ -150,7 +148,7 @@ while IFS= read -r line; do
     fi
 done < "$OUTPUT_FILE"
 
-# Print the last implementation if it has values
+# Print last implementation results if available
 if [[ -n "$IMPLEMENTATION" && -n "$AVERAGE_TIME" && -n "$CLUSTER_VALUES" && -n "$ITERATIONS" && -n "$TIME_PHASE_2" ]]; then
     echo -e "$IMPLEMENTATION:\n  - Time Phase 2: $TIME_PHASE_2\n  - Iterations: $ITERATIONS\n  - Average Time per Iteration: $AVERAGE_TIME\n  - Final Cluster Values: $CLUSTER_VALUES\n"
 fi
@@ -158,18 +156,14 @@ fi
 echo "Full results saved in $(pwd)/$OUTPUT_FILE"
 
 # ========= GENERATE CLUSTER CSV FILES =========
-
-# Check if gen_clusters.py exists
 GEN_CLUSTER_SCRIPT="generate_csv.py"
 CSV_OUTPUT_DIR="cluster_results"
 
 if [ -f "$GEN_CLUSTER_SCRIPT" ]; then
-    # Run the Python script to generate CSVs
     python3 "$GEN_CLUSTER_SCRIPT"
-
-    # Check if the CSV files were successfully created
+    
     if [ -d "$CSV_OUTPUT_DIR" ] && [ "$(ls -A "$CSV_OUTPUT_DIR")" ]; then
-        echo ""
+        echo "CSV files successfully generated in $CSV_OUTPUT_DIR"
     else
         echo "⚠️ Warning: CSV files were not generated! Please check '$GEN_CLUSTER_SCRIPT'."
     fi
@@ -178,3 +172,4 @@ else
 fi
 
 # ========= FINISH =========
+rm -rf "$EXECUTABLE_DIR"/*

@@ -211,10 +211,18 @@ public:
                     cout << "Point " << points[j].getID() + 1 << ": ";
                     for (int p = 0; p < total_values; p++)
                         cout << points[j].getValue(p) << " ";
+                    string point_name = points[j].getName();
+                    if (point_name != "")
+                        cout << "- " << point_name;
+
                     cout << endl;
                 }
             }
-            cout << "\n";
+            cout << "Cluster values: ";
+            for (int j = 0; j < total_values; j++)
+                cout << clusters[i].getCentralValue(j) << " ";
+
+            cout << "\n\n";
         }
 
         cout << "TOTAL EXECUTION TIME = " << chrono::duration_cast<chrono::microseconds>(end - begin).count() << " µs\n";
