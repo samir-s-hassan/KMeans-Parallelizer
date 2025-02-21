@@ -22,7 +22,10 @@ IMPLEMENTATIONS=(
     [l]="src/lightning-serial.cpp lightning-serial"
 )
 
-# Load the correct GCC module
+# Initialize the module system
+source /etc/profile.d/modules.sh  # This is usually required on many systems
+
+# Load GCC 11.2.0
 module load gcc-11.2.0
 
 # Verify GCC version
