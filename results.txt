@@ -1,46 +1,44 @@
 Running K-Means Implementations on datasets/1.txt
 
 ===== Running kmeans-serial on datasets/1.txt =====
-Break in iteration 5
+Break in iteration 2
 
 Cluster 1
-Point 1: 1 1 
-Point 2: 1.5 2 
-Cluster values: 1.25 1.5 
-
-Cluster 2
-Point 6: 4.5 5 
+Point 3: 3 4 
 Point 4: 5 7 
 Point 5: 3.5 5 
+Point 6: 4.5 5 
 Point 7: 3.5 4.5 
-Point 3: 3 4 
 Cluster values: 3.9 5.1 
 
-TOTAL EXECUTION TIME = 9 µs
+Cluster 2
+Point 2: 1.5 2 
+Point 1: 1 1 
+Cluster values: 1.25 1.5 
+
+TOTAL EXECUTION TIME = 7 µs
 TIME PHASE 1 = 1 µs
-TIME PHASE 2 = 7 µs
-SERIAL, AVERAGE TIME PER ITERATION = 1.4 µs
+TIME PHASE 2 = 6 µs
+SERIAL, AVERAGE TIME PER ITERATION = 3 µs
 kmeans-serial Execution Completed!
 
-===== Running kmeans-fast-serial on datasets/1.txt =====
-Break in iteration 6
+===== Running kmeans-nasn-serial on datasets/1.txt =====
+Break in iteration 3
 
 Cluster 1
-Point 1: 1 1 
-Point 2: 1.5 2 
-Cluster values: 1.25 1.5 
+Point 3: 3 4 
+Point 4: 5 7 
+Point 5: 3.5 5 
+Point 6: 4.5 5 
+Point 7: 3.5 4.5 
 
 Cluster 2
-Point 4: 5 7 
-Point 6: 4.5 5 
-Point 5: 3.5 5 
-Point 7: 3.5 4.5 
-Point 3: 3 4 
-Cluster values: 3.9 5.1 
+Point 1: 1 1 
+Point 2: 1.5 2 
 
-TOTAL EXECUTION TIME = 13 µs
-TIME PHASE 1 = 3 µs
-TIME PHASE 2 = 9 µs
-FAST-SERIAL, AVERAGE TIME PER ITERATION = 1.5 µs
-kmeans-fast-serial Execution Completed!
+TOTAL EXECUTION TIME = 7 µs
+TIME PHASE 1 = 1 µs
+TIME PHASE 2 = 6 µs
+SERIAL, AVERAGE TIME PER ITERATION = 2 µs
+kmeans-nasn-serial Execution Completed!
 

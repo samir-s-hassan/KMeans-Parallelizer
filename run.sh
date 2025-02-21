@@ -11,6 +11,7 @@ IMPLEMENTATIONS=(
     [f]="kmeans-fast-serial.cpp kmeans-fast-serial"
     [c]="kmeans-concurrent.cpp kmeans-concurrent"
     [p]="kmeans-parallel.cpp kmeans-parallel"
+    [n]="kmeans-nasn-serial.cpp kmeans-nasn-serial"
 )
 
 # Load the correct GCC module
