@@ -7,10 +7,9 @@
 #include <chrono>
 #include <unordered_set>
 #include <tbb/parallel_for.h>
-#include <atomic> //not used
+#include <atomic>			   //not used
 #include <tbb/blocked_range.h> //not used
-
-
+#include <tbb/enumerable_thread_specific.h>
 
 using namespace std;
 
@@ -203,20 +202,25 @@ public:
 		while (true)
 		{
 			auto iteration_start = chrono::high_resolution_clock::now();
-			bool done = true;
-
-			// Step 2a: **Assign each point to the nearest cluster**
-			for (int i = 0; i < total_points; i++)
-			{
-				int id_old_cluster = points[i].getCluster();
-				int id_nearest_center = getIDNearestCenter(points[i]);
-
-				if (id_old_cluster != id_nearest_center)
+			// Use an atomic variable for convergence detection
+			std::atomic<bool> done(true);
+            // Step 2a: **Assign each point to the nearest cluster**, SAMIR, parallelization, 4*
+			tbb::parallel_for(
+				tbb::blocked_range<int>(0, total_points),
+				[&](const tbb::blocked_range<int> &range)
 				{
-					points[i].setCluster(id_nearest_center);
-					done = false;
-				}
-			}
+					for (int i = range.begin(); i < range.end(); ++i)
+					{
+						int id_old_cluster = points[i].getCluster();
+						int id_nearest_center = getIDNearestCenter(points[i]);
+
+						if (id_old_cluster != id_nearest_center)
+						{
+							points[i].setCluster(id_nearest_center);
+							done.store(false, std::memory_order_relaxed); // Mark a change
+						}
+					}
+				});
 
 			// Step 2b: **Recalculate centroids based on new assignments**
 			vector<vector<double>> new_centroids(K, vector<double>(total_values, 0.0));
