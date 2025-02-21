@@ -4,15 +4,22 @@
 DATASET_DIR="datasets"
 DEFAULT_DATASET="1.txt"
 
+# Remove all files inside cluster_results without deleting the folder
+CSV_OUTPUT_DIR="cluster_results"
+if [ -d "$CSV_OUTPUT_DIR" ]; then
+    rm -f "$CSV_OUTPUT_DIR"/*
+fi
+
+
 # Define implementation mappings (Pointing to src/)
 declare -A IMPLEMENTATIONS
 IMPLEMENTATIONS=(
-    [s]="src/kmeans-serial.cpp kmeans-serial"
-    [f]="src/kmeans-fast-serial.cpp kmeans-fast-serial"
-    [c]="src/kmeans-concurrent.cpp kmeans-concurrent"
-    [p]="src/kmeans-parallel.cpp kmeans-parallel"
-    [n]="src/kmeans-nasn-serial.cpp kmeans-nasn-serial"
-    [l]="src/kmeans-lightning-serial.cpp kmeans-lightning-serial"
+    [s]="src/serial.cpp serial"
+    [f]="src/fast-serial.cpp fast-serial"
+    [c]="src/concurrent.cpp concurrent"
+    [p]="src/parallel.cpp parallel"
+    [n]="src/na-serial.cpp na-serial"
+    [l]="src/lightning-serial.cpp lightning-serial"
 )
 
 # Load the correct GCC module
@@ -91,11 +98,14 @@ for IMPL in "${SELECTED_IMPLEMENTATIONS[@]}"; do
     fi
 
     # Compile the implementation and place the executable in the folder
-    g++ -std=c++11 -O3 -march=native "$SOURCE_FILE" -o "$EXECUTABLE_PATH" -ltbb
-    if [ $? -ne 0 ]; then
-        echo "Compilation failed for $SOURCE_FILE! Skipping..."
-        echo "Compilation failed for $SOURCE_FILE! Skipping..." >> "$OUTPUT_FILE"
-        continue
+    if [ "$IMPL" == "p" ]; then
+        g++ -std=c++11 -O3 -march=native \
+            -I$TBBROOT/include \
+            -L$TBBROOT/lib/intel64/gcc4.8 \
+            -ltbb -ltbbmalloc -ltbbmalloc_proxy \
+            "$SOURCE_FILE" -o "$EXECUTABLE_PATH"
+    else
+        g++ -std=c++11 -O3 -march=native "$SOURCE_FILE" -o "$EXECUTABLE_PATH"
     fi
 
     # Run K-Means and append results to output file
@@ -173,4 +183,4 @@ else
 fi
 
 # ========= FINISH =========
-rm -rf "$EXECUTABLE_DIR"/*
+rm -rf "$EXECUTABLE_DIR"
