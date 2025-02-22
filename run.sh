@@ -16,7 +16,7 @@ declare -A IMPLEMENTATIONS
 IMPLEMENTATIONS=(
     [s]="src/serial.cpp serial"
     [f]="src/fast-serial.cpp fast-serial"
-    [c]="src/concurrent.cpp concurrent"
+    # [c]="src/concurrent.cpp concurrent"
     [p]="src/parallel.cpp parallel"
     [n]="src/na-serial.cpp na-serial"
     [l]="src/lightning-serial.cpp lightning-serial"

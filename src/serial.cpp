@@ -317,7 +317,7 @@ public:
 
 int main(int argc, char *argv[])
 {
-	srand(42);
+	srand(69);
 
 	int total_points, total_values, K, max_iterations, has_name;
 

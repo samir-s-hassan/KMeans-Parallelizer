@@ -3,7 +3,7 @@
 
 // SUMMARY
 // This version of the K-Means clustering algorithm **fully parallelizes both cluster assignment and centroid recomputation** using Intel TBB.  Steps 2a and 2b
-// It leverages **thread-local storage (TLS) with `tbb::enumerable_thread_specific`** to efficiently aggregate cluster updates across threads, minimizing synchronization overhead.  
+// It leverages **thread-local storage (TLS) with `tbb::enumerable_thread_specific`** to efficiently aggregate cluster updates across threads, minimizing synchronization overhead.
 // Samir's code
 
 #include <iostream>
@@ -19,6 +19,8 @@
 #include <atomic>
 #include <tbb/blocked_range.h>
 #include <tbb/enumerable_thread_specific.h>
+#include <tbb/concurrent_unordered_set.h>
+
 
 using namespace std;
 
@@ -363,7 +365,7 @@ public:
         if (iter > 1) // Only compute if we have at least 1 iteration
         {
             double avg_time_per_iteration = (double)chrono::duration_cast<chrono::microseconds>(end - end_phase1).count() / iter;
-            cout << "LIGHTNING-SERIAL, AVERAGE TIME PER ITERATION = " << avg_time_per_iteration << " µs\n";
+            cout << "PARALLEL, AVERAGE TIME PER ITERATION = " << avg_time_per_iteration << " µs\n";
         }
     }
 };
@@ -372,7 +374,7 @@ int main(int argc, char *argv[])
 {
     // Seed the random number generator (for selecting initial centroids randomly)
     // srand(time(NULL));
-    srand(42); // Use a fixed seed value before generating random centroids
+    srand(69);
 
     int total_points, total_values, K, max_iterations, has_name;
 

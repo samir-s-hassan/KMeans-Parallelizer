@@ -329,7 +329,7 @@ int main(int argc, char *argv[])
 {
     // Seed the random number generator (for selecting initial centroids randomly)
     // srand(time(NULL));
-    srand(42); // Use a fixed seed value before generating random centroids
+	srand(69);
 
     int total_points, total_values, K, max_iterations, has_name;
 
