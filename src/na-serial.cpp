@@ -2,8 +2,7 @@
 // reference: https://github.com/marcoscastro/kmeans
 
 // SUMMARY
-// This version of K-Means optimizes memory usage by removing per-cluster point storage, keeping only centroid values, and recalculating centroids using aggregate sums. 
-// It also simplifies cluster assignment logic, reduces memory overhead, and improves performance by focusing solely on centroid updates rather than maintaining point lists within clusters.
+// This version of K-Means optimizes memory usage by removing per-cluster point storage, keeping only centroid values, and recalculating centroids using aggregate sums. It also simplifies cluster assignment logic, reduces memory overhead, and improves performance by focusing solely on centroid updates rather than maintaining point lists within clusters.
 // Samir's code
 
 #include <iostream>
@@ -250,7 +249,7 @@ int main(int argc, char *argv[])
 {
     // Seed the random number generator (for selecting initial centroids randomly)
 	// srand(time(NULL));
-	srand(69);
+	srand(10);
 
     int total_points, total_values, K, max_iterations, has_name;
 

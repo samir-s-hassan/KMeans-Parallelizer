@@ -2,9 +2,8 @@
 // reference: https://github.com/marcoscastro/kmeans
 
 // SUMMARY
-// This version of the K-Means clustering algorithm further enhances **parallelization using Intel TBB** by optimizing the centroid recalculation step (Step 2b).
-// It introduces **thread-local storage (TLS) with `tbb::enumerable_thread_specific`** to aggregate cluster sums safely and efficiently across threads.
-// These improvements reduce synchronization overhead, increase parallel efficiency, and significantly accelerate centroid updates for large datasets.
+// This version of the K-Means clustering algorithm further enhances **parallelization using Intel TBB by optimizing the centroid recalculation step (Step 2b)
+// It introduces thread-local storage (TLS) with tbb::enumerable_thread_specific to aggregate cluster sums safely and efficiently across threads. These improvements reduce synchronization overhead, increase parallel efficiency, and significantly accelerate centroid updates for large datasets.
 // Samir's code
 
 #include <iostream>
@@ -371,7 +370,7 @@ int main(int argc, char *argv[])
 {
     // Seed the random number generator (for selecting initial centroids randomly)
     // srand(time(NULL));
-	srand(69);
+	srand(10);
 
     int total_points, total_values, K, max_iterations, has_name;
 

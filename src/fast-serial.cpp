@@ -2,8 +2,7 @@
 // reference: https://github.com/marcoscastro/kmeans
 
 // SUMMARY
-// This optimized K-Means implementation improves the baseline by reducing redundant computations, using loop unrolling, avoiding unnecessary function calls, and leveraging memory optimizations (e.g., `reserve()`, `shrink_to_fit()`, `unordered_set`). 
-// Additional improvements include replacing `pow(x, 2.0)` with direct multiplication, avoiding unnecessary `sqrt()` calculations, and using `emplace_back()` for efficiency in vector operations. 
+// This optimized K-Means implementation improves the baseline by reducing redundant computations, using loop unrolling, avoiding unnecessary function calls, and leveraging memory optimizations (e.g., `reserve()`, `shrink_to_fit()`, `unordered_set`). Additional improvements include replacing `pow(x, 2.0)` with direct multiplication, avoiding unnecessary `sqrt()` calculations, and using `emplace_back()` for efficiency in vector operations. 
 // Samir's code
 
 
@@ -430,7 +429,7 @@ public:
 int main(int argc, char *argv[])
 {
 	// Seed the random number generator (for selecting initial centroids randomly)
-	srand(69);
+	srand(10);
 
 	int total_points, total_values, K, max_iterations, has_name;
 

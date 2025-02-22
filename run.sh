@@ -104,7 +104,7 @@ for IMPL in "${SELECTED_IMPLEMENTATIONS[@]}"; do
     fi
 
     # Compile the implementation and place the executable in the folder
-    if [[ "$IMPL" == "p" || "$IMPL" == "a" || "$IMPL" == "b" ]]; then
+    if [[ "$IMPL" == "p" || "$IMPL" == "a" || "$IMPL" == "b" || "$IMPL" == "u" ]]; then
         g++ -std=c++11 -O3 -march=native \
             -I$TBBROOT/include \
             -L$TBBROOT/lib/intel64/gcc4.8 \

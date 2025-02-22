@@ -2,9 +2,8 @@
 // reference: https://github.com/marcoscastro/kmeans
 
 // SUMMARY
-// This version of the K-Means clustering algorithm **fully parallelizes both cluster assignment and centroid recomputation** using Intel TBB.  Steps 2a and 2b
-// It leverages **thread-local storage (TLS) with `tbb::enumerable_thread_specific`** to efficiently aggregate cluster updates across threads, minimizing synchronization overhead.
-// Samir's code
+// This implementation of the K-Means clustering algorithm applies fusion optimization by combining the reassignment and sum steps using Intel TBB’s parallelization features. It restructures the loop to first compute an initial sum, then iteratively perform divide, reassign, and sum while any points continue to move between clusters, ensuring efficient centroid updates with minimal synchronization overhead.
+// Samir's code CURRENTLY BROKEN IN SUBMISSION, WANT TO CONTINUE WORKING ON IT AS APPROACH CODE REVIEW
 
 #include <iostream>
 #include <vector>
@@ -207,131 +206,103 @@ public:
 
         //^^^ Don't want to parallelize this because Time Phase 1 is very small regardless of dataset and it can mess with rand(). Gets too confusing
         auto end_phase1 = chrono::high_resolution_clock::now();
-        int iter = 1;
         long long total_iteration_time = 0;
 
-        // Step 2: **Iterate until convergence or max_iterations reached**
+        // Compute initial sums based on random assignments
+        vector<vector<double>> new_centroids(K, vector<double>(total_values, 0.0));
+        vector<int> cluster_sizes(K, 0);
+
+        // Precompute the initial cluster sums
+        for (size_t i = 0; i < points.size(); ++i)
+        {
+            int cluster_id = points[i].getCluster();
+            cluster_sizes[cluster_id]++;
+
+            for (int j = 0; j < total_values; j++)
+            {
+                new_centroids[cluster_id][j] += points[i].getValue(j);
+            }
+        }
+
+        int iter = 1;
+
+        tbb::enumerable_thread_specific<vector<vector<double>>> local_sums;
+        tbb::enumerable_thread_specific<vector<int>> local_counts;
         while (true)
         {
             auto iteration_start = chrono::high_resolution_clock::now();
-            // Use an atomic variable for convergence detection
-            std::atomic<bool> done(true);
-            // Step 2a: **Assign each point to the nearest cluster**, SAMIR, parallelization
-            tbb::parallel_for(
-                tbb::blocked_range<int>(0, total_points),
-                [&](const tbb::blocked_range<int> &range)
-                {
-                    for (int i = range.begin(); i < range.end(); ++i)
-                    {
-                        int id_old_cluster = points[i].getCluster();
-                        int id_nearest_center = getIDNearestCenter(points[i]);
-
-                        if (id_old_cluster != id_nearest_center)
-                        {
-                            points[i].setCluster(id_nearest_center);
-                            done.store(false, std::memory_order_relaxed); // Mark a change
-                        }
+            // === Divide Step: Compute New Centroids ===
+            tbb::parallel_for(0, K, [&](int i)
+                              {
+                if (cluster_sizes[i] > 0) {
+                    double inv_size = 1.0 / cluster_sizes[i]; // Precompute division
+                    for (int j = 0; j < total_values; j++) {
+                        clusters[i].setCentralValue(j, new_centroids[i][j] * inv_size);
                     }
-                });
-            // Step 2b: **Recalculate centroids based on new assignments**, SAMIR, parallelization
-            // DID NOT Preallocate memory for all threads before computation to remove unnecessary dynamic allocation as there's not any consistent speedup from this
+                } });
 
-            // Global accumulators for new centroids and cluster sizes
-            vector<vector<double>> new_centroids(K, vector<double>(total_values, 0.0));
-            vector<int> cluster_sizes(K, 0);
-
-            // Step 2b.1: Thread-local storage for safe accumulation without race conditions
-            tbb::enumerable_thread_specific<vector<vector<double>>> local_sums;
-            tbb::enumerable_thread_specific<vector<int>> local_counts;
-
-            // Step 2b.2: Parallel Accumulation of Centroids using Thread-Local Storage
+            std::atomic<bool> done(true);
+            // === Fused Reassign + Sum Step ===
             tbb::parallel_for(tbb::blocked_range<size_t>(0, points.size()), [&](const tbb::blocked_range<size_t> &r)
                               {
-			// Each thread gets a local copy of centroid accumulators and cluster sizes
-			auto &local_centroids = local_sums.local();
-			auto &local_cluster_sizes = local_counts.local();
+                auto &local_centroids = local_sums.local();
+                auto &local_cluster_sizes = local_counts.local();
 
-			// Allocate memory for local storage only when needed
-			if (local_centroids.empty()) {
-				local_centroids.resize(K, vector<double>(total_values, 0.0));
-				local_cluster_sizes.resize(K, 0);
-			}
+                for (size_t i = r.begin(); i < r.end(); ++i) {
+                    int old_cluster = points[i].getCluster();
+                    int new_cluster = getIDNearestCenter(points[i]);
 
-			// Iterate over a subset of points assigned to this thread
-			for (size_t i = r.begin(); i < r.end(); ++i)
-			{
-				int cluster_id = points[i].getCluster(); // Get assigned cluster
-				local_cluster_sizes[cluster_id]++;       // Count points in each cluster
+                    if (old_cluster != new_cluster) {
+                        points[i].setCluster(new_cluster);
+                        done.store(false, std::memory_order_relaxed);
+                    }
 
-				int j = 0;
-				// Use **loop unrolling** for better cache utilization
-				for (; j + 3 < total_values; j += 4)
-				{
-					local_centroids[cluster_id][j] += points[i].getValue(j);
-					local_centroids[cluster_id][j + 1] += points[i].getValue(j + 1);
-					local_centroids[cluster_id][j + 2] += points[i].getValue(j + 2);
-					local_centroids[cluster_id][j + 3] += points[i].getValue(j + 3);
-				}
+                    local_cluster_sizes[new_cluster]++;
+                    for (int j = 0; j < total_values; j++) {
+                        local_centroids[new_cluster][j] += points[i].getValue(j);
+                    }
+                } });
 
-				// Handle remaining feature values
-				for (; j < total_values; j++)
-				{
-					local_centroids[cluster_id][j] += points[i].getValue(j);
-				}
-			} });
-
-            // Step 2b.3: Merge Thread-Local Results into Global Accumulators
+            // Merge thread-local results
             tbb::parallel_for(0, K, [&](int i)
                               {
-			for (const auto &local_centroids : local_sums)
-			{
-				for (int j = 0; j < total_values; j++)
-				{
-					new_centroids[i][j] += local_centroids[i][j];
-				}
-			}
+                for (const auto &local_centroids : local_sums) {
+                    for (int j = 0; j < total_values; j++) {
+                        new_centroids[i][j] += local_centroids[i][j];
+                    }
+                }
+                for (const auto &local_cluster_sizes : local_counts) {
+                    cluster_sizes[i] += local_cluster_sizes[i];
+                } });
 
-			for (const auto &local_cluster_sizes : local_counts)
-			{
-				cluster_sizes[i] += local_cluster_sizes[i];
-			} });
-
-            // Step 2b.4: Compute the New Centroid Positions (Parallelized)
-            tbb::parallel_for(0, K, [&](int i)
-                              {
-			if (cluster_sizes[i] > 0)
-			{
-				double inv_cluster_size = 1.0 / cluster_sizes[i]; // Precompute division
-
-				int j = 0;
-				// Loop unrolling for performance optimization
-				for (; j + 3 < total_values; j += 4)
-				{
-					clusters[i].setCentralValue(j, new_centroids[i][j] * inv_cluster_size);
-					clusters[i].setCentralValue(j + 1, new_centroids[i][j + 1] * inv_cluster_size);
-					clusters[i].setCentralValue(j + 2, new_centroids[i][j + 2] * inv_cluster_size);
-					clusters[i].setCentralValue(j + 3, new_centroids[i][j + 3] * inv_cluster_size);
-				}
-
-				// Handle remaining feature values
-				for (; j < total_values; j++)
-				{
-					clusters[i].setCentralValue(j, new_centroids[i][j] * inv_cluster_size);
-				}
-			} });
+            // === Reset for Next Iteration ===
+            fill(cluster_sizes.begin(), cluster_sizes.end(), 0);
+            for (auto &row : new_centroids)
+            {
+                fill(row.begin(), row.end(), 0.0);
+            }
 
             auto iteration_end = chrono::high_resolution_clock::now();
             total_iteration_time += chrono::duration_cast<chrono::microseconds>(iteration_end - iteration_start).count();
 
-            // Step 2c: **Check stopping condition**
-            if (done || iter >= max_iterations)
+            // === Check Stopping Condition ===
+            if (done.load() || iter >= max_iterations)
             {
                 cout << "Break in iteration " << iter << "\n\n";
                 break;
             }
-            iter++;
-        }
 
+            iter++; // Increment iteration count
+        }
+        // === Final Computation of Centroids (Ensure Consistency) ===
+        tbb::parallel_for(0, K, [&](int i)
+                          {
+            if (cluster_sizes[i] > 0) {
+                double inv_size = 1.0 / cluster_sizes[i];
+                for (int j = 0; j < total_values; j++) {
+                    clusters[i].setCentralValue(j, new_centroids[i][j] * inv_size);
+                }
+            } });
         auto end = chrono::high_resolution_clock::now();
 
         // Step 3: **Display results**
@@ -376,7 +347,7 @@ int main(int argc, char *argv[])
 {
     // Seed the random number generator (for selecting initial centroids randomly)
     // srand(time(NULL));
-    srand(69);
+	srand(10);
 
     int total_points, total_values, K, max_iterations, has_name;
 

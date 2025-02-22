@@ -2,8 +2,7 @@
 // reference: https://github.com/marcoscastro/kmeans
 
 // SUMMARY
-// This is the **baseline implementation** of the K-Means clustering algorithm, measuring execution time and average time per iteration.
-// It initializes clusters randomly, assigns points based on Euclidean distance, recalculates centroids iteratively, and stops upon convergence or reaching the maximum iterations.
+// This is the baseline implementation of the K-Means clustering algorithm, measuring execution time and average time per iteration. It initializes clusters randomly, assigns points based on Euclidean distance, recalculates centroids iteratively, and stops upon convergence or reaching the maximum iterations.
 // Professor Palmieri's code (only change is adding Average Time Per Iteration metric)
 
 #include <iostream>
@@ -317,7 +316,7 @@ public:
 
 int main(int argc, char *argv[])
 {
-	srand(69);
+	srand(10);
 
 	int total_points, total_values, K, max_iterations, has_name;
 

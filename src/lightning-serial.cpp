@@ -2,8 +2,7 @@
 // reference: https://github.com/marcoscastro/kmeans
 
 // SUMMARY
-// This optimized K-Means implementation enhances both performance and memory efficiency by eliminating per-cluster point storage, maintaining only centroid values, and recalculating centroids using aggregate sums.
-// Additional optimizations include loop unrolling for faster computations, an unordered set for O(1) centroid selection, direct multiplication instead of `pow(x, 2.0)`, avoiding `sqrt()` in distance comparisons, and preallocating memory to minimize dynamic resizing overhead.
+// This optimized K-Means implementation enhances both performance and memory efficiency by eliminating per-cluster point storage, maintaining only centroid values, and recalculating centroids using aggregate sums.Additional optimizations include loop unrolling for faster computations, an unordered set for O(1) centroid selection, direct multiplication instead of `pow(x, 2.0)`, avoiding `sqrt()` in distance comparisons, and preallocating memory to minimize dynamic resizing overhead. Combines fast-serial and na-serial
 // Samir's code
 
 #include <iostream>
@@ -329,7 +328,7 @@ int main(int argc, char *argv[])
 {
     // Seed the random number generator (for selecting initial centroids randomly)
     // srand(time(NULL));
-	srand(69);
+	srand(10);
 
     int total_points, total_values, K, max_iterations, has_name;
 
