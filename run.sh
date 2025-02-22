@@ -22,6 +22,7 @@ IMPLEMENTATIONS=(
     [l]="src/lightning-serial.cpp lightning-serial"
     [a]="src/a-parallel.cpp a-parallel"
     [b]="src/b-parallel.cpp b-parallel"
+    [u]="src/usion-parallel.cpp usion-parallel"
 )
 
 # Initialize the module system
