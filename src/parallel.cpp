@@ -21,7 +21,6 @@
 #include <tbb/enumerable_thread_specific.h>
 #include <tbb/concurrent_unordered_set.h>
 
-
 using namespace std;
 
 // ============================================================================
@@ -136,6 +135,7 @@ private:
     // ======================================================================
     int getIDNearestCenter(Point &point)
     {
+        // Attempted to parallelize this function but even on big datasets such as 8.txt we get no speedup
         double min_dist_sq = numeric_limits<double>::max(); // Store squared distance
         int id_cluster_center = 0;
 
@@ -205,6 +205,7 @@ public:
             }
         }
 
+        //^^^ Don't want to parallelize this because Time Phase 1 is very small regardless of dataset and it can mess with rand(). Gets too confusing
         auto end_phase1 = chrono::high_resolution_clock::now();
         int iter = 1;
         long long total_iteration_time = 0;
@@ -233,6 +234,7 @@ public:
                     }
                 });
             // Step 2b: **Recalculate centroids based on new assignments**, SAMIR, parallelization
+            // DID NOT Preallocate memory for all threads before computation to remove unnecessary dynamic allocation as there's not any consistent speedup from this
 
             // Global accumulators for new centroids and cluster sizes
             vector<vector<double>> new_centroids(K, vector<double>(total_values, 0.0));

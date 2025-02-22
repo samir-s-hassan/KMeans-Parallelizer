@@ -20,6 +20,7 @@
 #include <atomic>
 #include <tbb/blocked_range.h>
 #include <tbb/enumerable_thread_specific.h>
+#include <immintrin.h>  // AVX, AVX2
 
 using namespace std;
 
@@ -234,6 +235,7 @@ public:
             vector<int> cluster_sizes(K, 0);
 
             // Step 2b.1: Thread-local storage for safe accumulation without race conditions
+            //DID NOT Preallocate memory for all threads before computation to remove unnecessary dynamic allocation as there's not any consistent speedup from this
             tbb::enumerable_thread_specific<vector<vector<double>>> local_sums;
             tbb::enumerable_thread_specific<vector<int>> local_counts;
 
