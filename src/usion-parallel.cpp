@@ -41,7 +41,7 @@ public:
     {
         this->id_point = id_point;    // Assigns the point ID
         total_values = values.size(); // Stores the total number of features
-        // this->values.reserve(total_values); // DOESN'T WORK - ✅ Avoids dynamic resizing
+        // this->values.reserve(total_values); // DOESN'T WORK - dynamic resizing
 
         // SAMIR - Loop unrolling
         int i = 0;
@@ -65,7 +65,7 @@ public:
     // Getter Methods: Retrieve information about the point.
     // ============================================================================
 
-    // SAMIR - ✅ Inline small functions to reduce function call overhead
+    // SAMIR - Inline small functions
     inline int getID() const { return id_point; }
     inline int getCluster() const { return id_cluster; }
     inline void setCluster(int id_cluster) { this->id_cluster = id_cluster; }
@@ -91,7 +91,7 @@ public:
         this->id_cluster = id_cluster;
 
         int total_values = point.getTotalValues();
-        central_values.reserve(total_values); // SAMIR - ✅ Reserve space for feature values
+        central_values.reserve(total_values); // SAMIR - reserve space for feature values
 
         int i = 0;
         // SAMIR - Unroll by copying 4 feature values at a time
@@ -188,19 +188,19 @@ public:
         if (K > total_points)
             return;
 
-        unordered_set<int> chosen_indexes; // SAMIR - ✅ Use unordered_set for O(1) lookups
+        unordered_set<int> chosen_indexes; // SAMIR - unordered_set for O(1) lookups
 
-        clusters.reserve(K); // SAMIR - ✅ Reserve memory for K clusters to avoid dynamic resizing
+        clusters.reserve(K); // SAMIR - reserve memory for K clusters to avoid dynamic resizing
 
         // Step 1: **Select K unique initial centroids randomly**
         while (chosen_indexes.size() < K)
         {
             int index_point = rand() % total_points;
 
-            if (chosen_indexes.insert(index_point).second) // SAMIR - ✅ O(1) lookup and insert
+            if (chosen_indexes.insert(index_point).second) // SAMIR - O(1) lookup and insert
             {
                 points[index_point].setCluster(chosen_indexes.size() - 1);             // Assign cluster
-                clusters.emplace_back(chosen_indexes.size() - 1, points[index_point]); // SAMIR - ✅ Efficiently construct cluster
+                clusters.emplace_back(chosen_indexes.size() - 1, points[index_point]); // SAMIR - emplace back
             }
         }
 
@@ -370,7 +370,7 @@ int main(int argc, char *argv[])
     for (int i = 0; i < total_points; i++)
     {
         vector<double> values;        // Store feature values of the current point
-        values.reserve(total_values); // SAMIR - ✅ Preallocate memory for feature values
+        values.reserve(total_values); // SAMIR - preallocate memory for feature values
 
         // Read the feature values for the current point
         for (int j = 0; j < total_values; j++)
@@ -385,12 +385,12 @@ int main(int argc, char *argv[])
         {
             cin >> point_name;
             Point p(i, values, point_name); // Create a Point with a name
-            points.emplace_back(i, values); // SAMIR - ✅ Use `emplace_back()` instead of `push_back()`
+            points.emplace_back(i, values); // SAMIR - emplace back
         }
         else
         {
             Point p(i, values);             // Create a Point without a name
-            points.emplace_back(i, values); // SAMIR - ✅ Use `emplace_back()` instead of `push_back()`
+            points.emplace_back(i, values); // SAMIR - emplace back
         }
     }
 
