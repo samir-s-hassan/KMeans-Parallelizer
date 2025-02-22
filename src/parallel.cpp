@@ -2,7 +2,7 @@
 // reference: https://github.com/marcoscastro/kmeans
 
 // SUMMARY
-// This version of the K-Means clustering algorithm **fully parallelizes both cluster assignment and centroid recomputation using Intel TBB.  Combines Steps 2a and 2b 
+// This version of the K-Means clustering algorithm **fully parallelizes both cluster assignment and centroid recomputation using Intel TBB.  Combines Steps 2a and 2b
 // It leverages thread-local storage (TLS) with `tbb::enumerable_thread_specific` to efficiently aggregate cluster updates across threads, minimizing synchronization overhead.
 // Samir's code
 
@@ -342,14 +342,14 @@ public:
             {
                 if (points[j].getCluster() == i)
                 {
-                    cout << "Point " << points[j].getID() + 1 << ": ";
-                    for (int p = 0; p < total_values; p++)
-                        cout << points[j].getValue(p) << " ";
-                    string point_name = points[j].getName();
-                    if (point_name != "")
-                        cout << "- " << point_name;
+                    // cout << "Point " << points[j].getID() + 1 << ": ";
+                    // for (int p = 0; p < total_values; p++)
+                    //     cout << points[j].getValue(p) << " ";
+                    // string point_name = points[j].getName();
+                    // if (point_name != "")
+                    //     cout << "- " << point_name;
 
-                    cout << endl;
+                    // cout << endl;
                 }
             }
             cout << "Cluster values: ";
@@ -368,6 +368,18 @@ public:
         {
             double avg_time_per_iteration = (double)chrono::duration_cast<chrono::microseconds>(end - end_phase1).count() / iter;
             cout << "PARALLEL, AVERAGE TIME PER ITERATION = " << avg_time_per_iteration << " µs\n";
+            // Compute total execution time in microseconds
+            long long total_execution_time = chrono::duration_cast<chrono::microseconds>(end - begin).count();
+
+            // Compute throughput (points processed per second)
+            double throughput = (double)total_points / (total_execution_time / 1e6); // Convert µs to seconds
+
+            // Compute latency (time taken per point in µs)
+            double latency = (double)total_execution_time / total_points;
+
+            // Print results
+            cout << "THROUGHPUT = " << throughput << " points per second\n";
+            cout << "LATENCY = " << latency << " µs per point\n";
         }
     }
 };
@@ -376,7 +388,7 @@ int main(int argc, char *argv[])
 {
     // Seed the random number generator (for selecting initial centroids randomly)
     // srand(time(NULL));
-	srand(10);
+    srand(10);
 
     int total_points, total_values, K, max_iterations, has_name;
 

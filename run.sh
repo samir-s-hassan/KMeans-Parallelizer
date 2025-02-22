@@ -133,19 +133,25 @@ AVERAGE_TIME=""
 CLUSTER_VALUES=""
 ITERATIONS=""
 TIME_PHASE_2=""
+THROUGHPUT=""
+LATENCY=""
 
 while IFS= read -r line; do
     # Detect when a new implementation is being processed
     if [[ "$line" =~ ^=====.*Running.*on.*$ ]]; then
         # Print previous implementation details if available
-        if [[ -n "$IMPLEMENTATION" && -n "$AVERAGE_TIME" && -n "$CLUSTER_VALUES" && -n "$ITERATIONS" && -n "$TIME_PHASE_2" ]]; then
-            echo -e "$IMPLEMENTATION:\n  - Time Phase 2: $TIME_PHASE_2\n  - Iterations: $ITERATIONS\n  - Average Time per Iteration: $AVERAGE_TIME\n  - Final Cluster Values: $CLUSTER_VALUES\n"
+        if [[ -n "$IMPLEMENTATION" && -n "$AVERAGE_TIME" && -n "$CLUSTER_VALUES" && -n "$ITERATIONS" && -n "$TIME_PHASE_2" && -n "$THROUGHPUT" && -n "$LATENCY" ]]; then
+            echo -e "$IMPLEMENTATION:\n  - Time Phase 2: $TIME_PHASE_2\n  - Iterations: $ITERATIONS\n  - Average Time per Iteration: $AVERAGE_TIME\n  - Throughput: $THROUGHPUT\n  - Latency: $LATENCY\n  - Final Cluster Values: $CLUSTER_VALUES\n"
         fi
+        
+        # Reset variables for the new implementation
         IMPLEMENTATION=$(echo "$line" | awk '{print $3}')
         AVERAGE_TIME=""
         CLUSTER_VALUES=""
         ITERATIONS=""
         TIME_PHASE_2=""
+        THROUGHPUT=""
+        LATENCY=""
     
     # Extract Time Phase 2
     elif [[ "$line" =~ TIME\ PHASE\ 2\ = ]]; then
@@ -159,6 +165,14 @@ while IFS= read -r line; do
     elif [[ "$line" =~ AVERAGE\ TIME\ PER\ ITERATION\ = ]]; then
         AVERAGE_TIME=$(echo "$line" | awk -F' = ' '{print $2}')
     
+    # Extract Throughput
+    elif [[ "$line" =~ THROUGHPUT\ = ]]; then
+        THROUGHPUT=$(echo "$line" | awk -F' = ' '{print $2}')
+    
+    # Extract Latency
+    elif [[ "$line" =~ LATENCY\ = ]]; then
+        LATENCY=$(echo "$line" | awk -F' = ' '{print $2}')
+    
     # Extract Final Cluster Values (last occurrence)
     elif [[ "$line" =~ Cluster\ values: ]]; then
         CLUSTER_VALUES=$(echo "$line" | awk -F': ' '{print $2}')
@@ -166,27 +180,27 @@ while IFS= read -r line; do
 done < "$OUTPUT_FILE"
 
 # Print last implementation results if available
-if [[ -n "$IMPLEMENTATION" && -n "$AVERAGE_TIME" && -n "$CLUSTER_VALUES" && -n "$ITERATIONS" && -n "$TIME_PHASE_2" ]]; then
-    echo -e "$IMPLEMENTATION:\n  - Time Phase 2: $TIME_PHASE_2\n  - Iterations: $ITERATIONS\n  - Average Time per Iteration: $AVERAGE_TIME\n  - Final Cluster Values: $CLUSTER_VALUES\n"
+if [[ -n "$IMPLEMENTATION" && -n "$AVERAGE_TIME" && -n "$CLUSTER_VALUES" && -n "$ITERATIONS" && -n "$TIME_PHASE_2" && -n "$THROUGHPUT" && -n "$LATENCY" ]]; then
+    echo -e "$IMPLEMENTATION:\n  - Time Phase 2: $TIME_PHASE_2\n  - Iterations: $ITERATIONS\n  - Average Time per Iteration: $AVERAGE_TIME\n  - Throughput: $THROUGHPUT\n  - Latency: $LATENCY\n  - Final Cluster Values: $CLUSTER_VALUES\n"
 fi
 
 echo "✅ Full results saved in $(pwd)/$OUTPUT_FILE"
 
-# ========= GENERATE CLUSTER CSV FILES =========
-GEN_CLUSTER_SCRIPT="generate_csv.py"
-CSV_OUTPUT_DIR="cluster_results"
+# # ========= GENERATE CLUSTER CSV FILES =========
+# GEN_CLUSTER_SCRIPT="generate_csv.py"
+# CSV_OUTPUT_DIR="cluster_results"
 
-if [ -f "$GEN_CLUSTER_SCRIPT" ]; then
-    python3 "$GEN_CLUSTER_SCRIPT"
+# if [ -f "$GEN_CLUSTER_SCRIPT" ]; then
+#     python3 "$GEN_CLUSTER_SCRIPT"
     
-    if [ -d "$CSV_OUTPUT_DIR" ] && [ "$(ls -A "$CSV_OUTPUT_DIR")" ]; then
-        echo ""
-    else
-        echo "⚠️ Warning: CSV files were not generated! Please check '$GEN_CLUSTER_SCRIPT'."
-    fi
-else
-    echo "❌ Error: '$GEN_CLUSTER_SCRIPT' not found! Please make sure the script exists."
-fi
+#     if [ -d "$CSV_OUTPUT_DIR" ] && [ "$(ls -A "$CSV_OUTPUT_DIR")" ]; then
+#         echo ""
+#     else
+#         echo "⚠️ Warning: CSV files were not generated! Please check '$GEN_CLUSTER_SCRIPT'."
+#     fi
+# else
+#     echo "❌ Error: '$GEN_CLUSTER_SCRIPT' not found! Please make sure the script exists."
+# fi
 
 # ========= FINISH =========
 rm -rf "$EXECUTABLE_DIR"

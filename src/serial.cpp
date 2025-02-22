@@ -3,7 +3,7 @@
 
 // SUMMARY
 // This is the baseline implementation of the K-Means clustering algorithm, measuring execution time and average time per iteration. It initializes clusters randomly, assigns points based on Euclidean distance, recalculates centroids iteratively, and stops upon convergence or reaching the maximum iterations.
-// Professor Palmieri's code (only change is adding Average Time Per Iteration metric)
+// Professor Palmieri's code (only change is adding metrics at the end and stop printing points)
 
 #include <iostream>
 #include <vector>
@@ -280,36 +280,47 @@ public:
 			cout << "Cluster " << clusters[i].getID() + 1 << endl;
 			for (int j = 0; j < total_points_cluster; j++)
 			{
-				cout << "Point " << clusters[i].getPoint(j).getID() + 1 << ": ";
-				for (int p = 0; p < total_values; p++)
-					cout << clusters[i].getPoint(j).getValue(p) << " ";
+				// cout << "Point " << clusters[i].getPoint(j).getID() + 1 << ": ";
+				// for (int p = 0; p < total_values; p++)
+				// 	cout << clusters[i].getPoint(j).getValue(p) << " ";
 
-				string point_name = clusters[i].getPoint(j).getName();
+				// string point_name = clusters[i].getPoint(j).getName();
 
-				if (point_name != "")
-					cout << "- " << point_name;
+				// if (point_name != "")
+				// 	cout << "- " << point_name;
 
-				cout << endl;
+				// cout << endl;
 			}
-
 			cout << "Cluster values: ";
 
 			for (int j = 0; j < total_values; j++)
 				cout << clusters[i].getCentralValue(j) << " ";
+		}
 
-			cout << "\n\n";
-			cout << "TOTAL EXECUTION TIME = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "\n";
+		cout << "\n\n";
+		cout << "TOTAL EXECUTION TIME = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "\n";
 
-			cout << "TIME PHASE 1 = " << std::chrono::duration_cast<std::chrono::microseconds>(end_phase1 - begin).count() << "\n";
+		cout << "TIME PHASE 1 = " << std::chrono::duration_cast<std::chrono::microseconds>(end_phase1 - begin).count() << "\n";
 
-			cout << "TIME PHASE 2 = " << std::chrono::duration_cast<std::chrono::microseconds>(end - end_phase1).count() << "\n";
+		cout << "TIME PHASE 2 = " << std::chrono::duration_cast<std::chrono::microseconds>(end - end_phase1).count() << "\n";
 
-			// Calculate and display the **average time per iteration**
-			if (iter > 1) // Only compute if we have at least 1 iteration
-			{
-				double avg_time_per_iteration = (double)chrono::duration_cast<chrono::microseconds>(end - end_phase1).count() / iter;
-				cout << "SERIAL, AVERAGE TIME PER ITERATION = " << avg_time_per_iteration << " µs\n";
-			}
+		// Calculate and display the **average time per iteration**
+		if (iter > 1) // Only compute if we have at least 1 iteration
+		{
+			double avg_time_per_iteration = (double)chrono::duration_cast<chrono::microseconds>(end - end_phase1).count() / iter;
+			cout << "SERIAL, AVERAGE TIME PER ITERATION = " << avg_time_per_iteration << " µs\n";
+			// Compute total execution time in microseconds
+			long long total_execution_time = chrono::duration_cast<chrono::microseconds>(end - begin).count();
+
+			// Compute throughput (points processed per second)
+			double throughput = (double)total_points / (total_execution_time / 1e6); // Convert µs to seconds
+
+			// Compute latency (time taken per point in µs)
+			double latency = (double)total_execution_time / total_points;
+
+			// Print results
+			cout << "THROUGHPUT = " << throughput << " points per second\n";
+			cout << "LATENCY = " << latency << " µs per point\n";
 		}
 	}
 };

@@ -19,7 +19,7 @@
 #include <atomic>
 #include <tbb/blocked_range.h>
 #include <tbb/enumerable_thread_specific.h>
-#include <immintrin.h>  // AVX, AVX2
+#include <immintrin.h> // AVX, AVX2
 
 using namespace std;
 
@@ -188,7 +188,7 @@ public:
         if (K > total_points)
             return;
 
-        unordered_set<int> chosen_indexes; // SAMIR - unordered_set for O(1) lookups
+        unordered_set<int> chosen_indexes; // SAMIR - unordered for O(1) lookups
 
         clusters.reserve(K); // SAMIR - reserve memory for K clusters to avoid dynamic resizing
 
@@ -234,7 +234,7 @@ public:
             vector<int> cluster_sizes(K, 0);
 
             // Step 2b.1: Thread-local storage for safe accumulation without race conditions
-            //DID NOT Preallocate memory for all threads before computation to remove unnecessary dynamic allocation as there's not any consistent speedup from this
+            // DID NOT Preallocate memory for all threads before computation to remove unnecessary dynamic allocation as there's not any consistent speedup from this
             tbb::enumerable_thread_specific<vector<vector<double>>> local_sums;
             tbb::enumerable_thread_specific<vector<int>> local_counts;
 
@@ -336,14 +336,14 @@ public:
             {
                 if (points[j].getCluster() == i)
                 {
-                    cout << "Point " << points[j].getID() + 1 << ": ";
-                    for (int p = 0; p < total_values; p++)
-                        cout << points[j].getValue(p) << " ";
-                    string point_name = points[j].getName();
-                    if (point_name != "")
-                        cout << "- " << point_name;
+                    // cout << "Point " << points[j].getID() + 1 << ": ";
+                    // for (int p = 0; p < total_values; p++)
+                    //     cout << points[j].getValue(p) << " ";
+                    // string point_name = points[j].getName();
+                    // if (point_name != "")
+                    //     cout << "- " << point_name;
 
-                    cout << endl;
+                    // cout << endl;
                 }
             }
             cout << "Cluster values: ";
@@ -362,6 +362,18 @@ public:
         {
             double avg_time_per_iteration = (double)chrono::duration_cast<chrono::microseconds>(end - end_phase1).count() / iter;
             cout << "B-PARALLEL, AVERAGE TIME PER ITERATION = " << avg_time_per_iteration << " µs\n";
+            // Compute total execution time in microseconds
+            long long total_execution_time = chrono::duration_cast<chrono::microseconds>(end - begin).count();
+
+            // Compute throughput (points processed per second)
+            double throughput = (double)total_points / (total_execution_time / 1e6); // Convert µs to seconds
+
+            // Compute latency (time taken per point in µs)
+            double latency = (double)total_execution_time / total_points;
+
+            // Print results
+            cout << "THROUGHPUT = " << throughput << " points per second\n";
+            cout << "LATENCY = " << latency << " µs per point\n";
         }
     }
 };
@@ -370,7 +382,7 @@ int main(int argc, char *argv[])
 {
     // Seed the random number generator (for selecting initial centroids randomly)
     // srand(time(NULL));
-	srand(69);
+    srand(10);
 
     int total_points, total_values, K, max_iterations, has_name;
 

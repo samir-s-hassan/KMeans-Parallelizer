@@ -364,15 +364,15 @@ public:
 			cout << "Cluster " << clusters[i].getID() + 1 << endl;
 			for (int j = 0; j < total_points_cluster; j++)
 			{
-				cout << "Point " << clusters[i].getPoint(j).getID() + 1 << ": ";
-				for (int p = 0; p < total_values; p++)
-					cout << clusters[i].getPoint(j).getValue(p) << " ";
+				// cout << "Point " << clusters[i].getPoint(j).getID() + 1 << ": ";
+				// for (int p = 0; p < total_values; p++)
+				// 	cout << clusters[i].getPoint(j).getValue(p) << " ";
 
-				string point_name = clusters[i].getPoint(j).getName();
-				if (point_name != "")
-					cout << "- " << point_name;
+				// string point_name = clusters[i].getPoint(j).getName();
+				// if (point_name != "")
+				// 	cout << "- " << point_name;
 
-				cout << endl;
+				// cout << endl;
 			}
 
 			cout << "Cluster values: ";
@@ -392,6 +392,18 @@ public:
 		{
 			double avg_time_per_iteration = (double)chrono::duration_cast<chrono::microseconds>(end - end_phase1).count() / iter;
 			cout << "FAST-SERIAL, AVERAGE TIME PER ITERATION = " << avg_time_per_iteration << " µs\n";
+			// Compute total execution time in microseconds
+			long long total_execution_time = chrono::duration_cast<chrono::microseconds>(end - begin).count();
+
+			// Compute throughput (points processed per second)
+			double throughput = (double)total_points / (total_execution_time / 1e6); // Convert µs to seconds
+
+			// Compute latency (time taken per point in µs)
+			double latency = (double)total_execution_time / total_points;
+
+			// Print results
+			cout << "THROUGHPUT = " << throughput << " points per second\n";
+			cout << "LATENCY = " << latency << " µs per point\n";
 		}
 	}
 };
