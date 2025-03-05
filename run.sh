@@ -141,7 +141,7 @@ while IFS= read -r line; do
     if [[ "$line" =~ ^=====.*Running.*on.*$ ]]; then
         # Print previous implementation details if available
         if [[ -n "$IMPLEMENTATION" && -n "$AVERAGE_TIME" && -n "$CLUSTER_VALUES" && -n "$ITERATIONS" && -n "$TIME_PHASE_2" && -n "$THROUGHPUT" && -n "$LATENCY" ]]; then
-            echo -e "$IMPLEMENTATION:\n  - Time Phase 2: $TIME_PHASE_2\n  - Iterations: $ITERATIONS\n  - Average Time per Iteration: $AVERAGE_TIME\n  - Throughput: $THROUGHPUT\n  - Latency: $LATENCY\n  - Final Cluster Values: $CLUSTER_VALUES\n"
+            echo -e "$IMPLEMENTATION:\n  - Time Phase 2: $TIME_PHASE_2\n  - Iterations: $ITERATIONS\n  - Average Time per Iteration: $AVERAGE_TIME\n  - Throughput (Phase 2): $THROUGHPUT\n  - Latency (Phase 2): $LATENCY\n  - Final Cluster Values: $CLUSTER_VALUES\n"
         fi
         
         # Reset variables for the new implementation
@@ -181,7 +181,7 @@ done < "$OUTPUT_FILE"
 
 # Print last implementation results if available
 if [[ -n "$IMPLEMENTATION" && -n "$AVERAGE_TIME" && -n "$CLUSTER_VALUES" && -n "$ITERATIONS" && -n "$TIME_PHASE_2" && -n "$THROUGHPUT" && -n "$LATENCY" ]]; then
-    echo -e "$IMPLEMENTATION:\n  - Time Phase 2: $TIME_PHASE_2\n  - Iterations: $ITERATIONS\n  - Average Time per Iteration: $AVERAGE_TIME\n  - Throughput: $THROUGHPUT\n  - Latency: $LATENCY\n  - Final Cluster Values: $CLUSTER_VALUES\n"
+    echo -e "$IMPLEMENTATION:\n  - Time Phase 2: $TIME_PHASE_2\n  - Iterations: $ITERATIONS\n  - Average Time per Iteration: $AVERAGE_TIME\n  - Throughput (Phase 2): $THROUGHPUT\n  - Latency (Phase 2): $LATENCY\n  - Final Cluster Values: $CLUSTER_VALUES\n"
 fi
 
 echo "✅ Full results saved in $(pwd)/$OUTPUT_FILE"
