@@ -1,4 +1,4 @@
-# hw2_kmeans
+# KMeans-Parallelizer (hw2_kmeans)
 
 The purpose of this program is to take a sequential implementation of the K-Means clustering algorithm and optimize it for improved performance by applying parallelization techniques on the CPU. The project explores a wide range of fine-grained performance improvements including Intel Threading Building Blocks (TBB), with a focus on both scalability and computational efficiency.
 
