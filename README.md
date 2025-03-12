@@ -69,14 +69,7 @@ Metadata is present on top of each .txt dataset file. The metadata was added aft
 4th number represents maximum number of iterations allowed for the K-Means algorithm  
 5th number represents whether the point has a name (a boolean flag: 0 = no names, 1 = names are present for each point)  
 
-1.txt <- provided by Professor Palmieri  
-2.txt <- provided by Professor Palmieri  
-3.txt <- dry_beans.txt <- http://archive.ics.uci.edu/dataset/602/dry+bean+dataset  
-4.txt <- Wholesale_customers_data.txt <- https://archive.ics.uci.edu/dataset/292/wholesale+customers  
-5.txt <- HTRU_2.txt <- https://archive.ics.uci.edu/dataset/372/htru2  
-6.txt <- urbanGB.txt <- https://archive.ics.uci.edu/dataset/550/urbangb+urban+road+accidents+coordinates+labelled+by+the+urban+center  
-7.txt <- 3D_spatial_network.txt <- https://archive.ics.uci.edu/dataset/246/3d+road+network+north+jutland+denmark  
-8.txt <- Range-Queries-Aggregates.txt <- https://archive.ics.uci.edu/dataset/493/query+analytics+workloads+dataset  
+See [datasets/datasets.md](datasets/datasets.md) for dataset information.
 
 ## Charts
 https://docs.google.com/spreadsheets/d/1w9QckUbBnYQO1gXstozWQDwRfLRCrpcjpW0PHK8apVI/edit?usp=sharing
