@@ -38,9 +38,9 @@ parallel:
   - Latency (Phase 2): 0.00927922 µs per point
   - Final Cluster Values: 57673.6 947.431 371.248 200.14 1.87332 0.832684 58541.7 270.904 0.720855 0.98521 0.808614 0.733245 0.00644676 0.00116156 0.540491 0.992616 
 
-Time Phase 2 is the total execution time spent in Phase 2, which includes: Cluster assignment (Step 2a), Centroid recomputation (Step 2b). It excludes Phase 1, which is initial centroid selection.  
+Time Phase 2 is the total execution time spent in Phase 2, which includes: Cluster assignment (Step 2a), Centroid recomputation (Step 2b); it excludes Phase 1, which is initial centroid selection.  
 Iterations is the number of iterations it took for the K-Means algorithm to reach convergence (i.e., no points moved to a different cluster or the max_iterations was hit).  
-Average Time per Iteration is the Phase 2 total time divided by number of iterations. 
+Average Time per Iteration is the Phase 2 total time divided by number of iterations.   
 Throughput (Phase 2) is the rate at which points were processed during Phase 2.  
 Latency (Phase 2) is the average time it took to process one point per iteration.  
 Final Cluster Values is the final centroid positions for your clusters.  
