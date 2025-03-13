@@ -18,14 +18,14 @@ Runs the serial, fast-serial, na-serial, and lightning-serial implementation on 
 ./run.sh a b p 8.txt  
 Runs the a-parallel, b-parallel, and parallel implementation on the dataset 8.txt
 
-[s]="src/serial.cpp serial"  
-[f]="src/fast-serial.cpp fast-serial"  
-[p]="src/parallel.cpp parallel"  
-[n]="src/na-serial.cpp na-serial"  
-[l]="src/lightning-serial.cpp lightning-serial"  
-[a]="src/a-parallel.cpp a-parallel"  
-[b]="src/b-parallel.cpp b-parallel"  
-[u]="src/usion-parallel.cpp usion-parallel"  
+s = src/serial.cpp  
+f = src/fast-serial.cpp  
+p = src/parallel.cpp  
+n = src/na-serial.cpp  
+l = src/lightning-serial.cpp  
+a = src/a-parallel.cpp  
+b = src/b-parallel.cpp  
+u = src/usion-parallel.cpp
 
 ## Understanding the output
 Example output:  
