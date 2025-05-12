@@ -1,4 +1,4 @@
-# hw2_kmeans
+# KMeans-Parallelizer (hw2_kmeans)
 
 The purpose of this program is to take a sequential implementation of the K-Means clustering algorithm and optimize it for improved performance by applying parallelization techniques on the CPU. The project explores a wide range of fine-grained performance improvements including Intel Threading Building Blocks (TBB), with a focus on both scalability and computational efficiency.
 
@@ -18,14 +18,14 @@ Runs the serial, fast-serial, na-serial, and lightning-serial implementation on 
 ./run.sh a b p 8.txt  
 Runs the a-parallel, b-parallel, and parallel implementation on the dataset 8.txt
 
-[s]="src/serial.cpp serial"  
-[f]="src/fast-serial.cpp fast-serial"  
-[p]="src/parallel.cpp parallel"  
-[n]="src/na-serial.cpp na-serial"  
-[l]="src/lightning-serial.cpp lightning-serial"  
-[a]="src/a-parallel.cpp a-parallel"  
-[b]="src/b-parallel.cpp b-parallel"  
-[u]="src/usion-parallel.cpp usion-parallel"  
+s = src/serial.cpp  
+f = src/fast-serial.cpp  
+p = src/parallel.cpp  
+n = src/na-serial.cpp  
+l = src/lightning-serial.cpp  
+a = src/a-parallel.cpp  
+b = src/b-parallel.cpp  
+u = src/usion-parallel.cpp
 
 ## Understanding the output
 Example output:  
@@ -38,9 +38,9 @@ parallel:
   - Latency (Phase 2): 0.00927922 µs per point
   - Final Cluster Values: 57673.6 947.431 371.248 200.14 1.87332 0.832684 58541.7 270.904 0.720855 0.98521 0.808614 0.733245 0.00644676 0.00116156 0.540491 0.992616 
 
-Time Phase 2 is the total execution time spent in Phase 2, which includes: Cluster assignment (Step 2a), Centroid recomputation (Step 2b). It excludes Phase 1, which is initial centroid selection.  
+Time Phase 2 is the total execution time spent in Phase 2, which includes: Cluster assignment (Step 2a), Centroid recomputation (Step 2b); it excludes Phase 1, which is initial centroid selection.  
 Iterations is the number of iterations it took for the K-Means algorithm to reach convergence (i.e., no points moved to a different cluster or the max_iterations was hit).  
-Average Time per Iteration is the Phase 2 total time divided by number of iterations. 
+Average Time per Iteration is the Phase 2 total time divided by number of iterations.   
 Throughput (Phase 2) is the rate at which points were processed during Phase 2.  
 Latency (Phase 2) is the average time it took to process one point per iteration.  
 Final Cluster Values is the final centroid positions for your clusters.  
