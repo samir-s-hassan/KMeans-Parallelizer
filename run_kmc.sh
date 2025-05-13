@@ -47,7 +47,6 @@ fi
 # === START LOGGING ===
 # echo "📊 Using dataset: $DATASET"
 echo "Running K-Means Implementations on $DATASET" > "$OUTPUT_FILE"
-echo "" >> "$OUTPUT_FILE"
 
 [ ${#SELECTED_IMPLEMENTATIONS[@]} -eq 0 ] && SELECTED_IMPLEMENTATIONS=("s" "p" "a" "b" "k")
 

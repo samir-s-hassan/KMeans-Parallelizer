@@ -64,7 +64,8 @@ int count_kmcuda_iterations(KMCUDAResult &out_result)
     char *line = strtok(buffer, "\n");
     while (line)
     {
-        // cout << line << endl; // <-- Echo back KM-CUDA's log output
+        // KEEP THIS FOR DRY BEANS, COMMENT FOR BIG DATASETS
+        cout << line << endl; // <-- Echo back KM-CUDA's log output
         if (strncmp(line, "iteration ", 10) == 0)
         {
             iterations++;
