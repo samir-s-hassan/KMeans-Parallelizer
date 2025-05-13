@@ -6,6 +6,7 @@
 // It parallelizes the cluster assignment step using tbb::parallel_for, utilizes atomic variables for convergence detection, and optimizes memory access with loop unrolling.
 // Samir's code
 
+#include <sstream>
 #include <iostream>
 #include <vector>
 #include <math.h>
@@ -373,31 +374,29 @@ int main(int argc, char *argv[])
 	// ==========================================================================
 	for (int i = 0; i < total_points; i++)
 	{
-		vector<double> values;		  // Store feature values of the current point
-		values.reserve(total_values); // SAMIR - Preallocate memory for feature values
+		string line;
+		getline(cin >> ws, line); // read full line and skip leading whitespace
+		istringstream ss(line);
+		string token;
+		vector<double> values;
+		values.reserve(total_values);
 
-		// Read the feature values for the current point
-		for (int j = 0; j < total_values; j++)
+		for (int j = 0; j < total_values && getline(ss, token, ','); j++)
 		{
-			double value;
-			cin >> value;
-			values.push_back(value);
+			values.push_back(stod(token));
 		}
 
-		// If the points have names, read and store the name
-		if (has_name)
+		if (has_name && getline(ss, token, ','))
 		{
-			cin >> point_name;
-			Point p(i, values, point_name); // Create a Point with a name
-			points.emplace_back(i, values); // SAMIR - emplace back
+			Point p(i, values, token);
+			points.emplace_back(i, values);
 		}
 		else
 		{
-			Point p(i, values);				// Create a Point without a name
-			points.emplace_back(i, values); // SAMIR - emplace back
+			Point p(i, values);
+			points.emplace_back(i, values);
 		}
 	}
-
 	// ==========================================================================
 	// Step 3: Initialize K-Means Algorithm and Run Clustering
 	// ==========================================================================

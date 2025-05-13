@@ -1,3 +1,4 @@
+#include <sstream>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -63,7 +64,7 @@ int count_kmcuda_iterations(KMCUDAResult &out_result)
     char *line = strtok(buffer, "\n");
     while (line)
     {
-        cout << line << endl; // <-- Echo back KM-CUDA's log output
+        // cout << line << endl; // <-- Echo back KM-CUDA's log output
         if (strncmp(line, "iteration ", 10) == 0)
         {
             iterations++;
@@ -88,12 +89,20 @@ int main()
     string dummy;
     for (int i = 0; i < total_points; ++i)
     {
-        for (int j = 0; j < total_values; ++j)
+        string line;
+        getline(cin >> ws, line); // Read full line, skip leading whitespace
+        stringstream ss(line);
+        string token;
+
+        for (int j = 0; j < total_values && getline(ss, token, ','); ++j)
         {
-            cin >> features[i * total_values + j];
+            features[i * total_values + j] = stof(token); // Convert token to float
         }
-        if (has_name)
-            cin >> dummy;
+
+        if (has_name && getline(ss, token, ',')) // Read name if present
+        {
+            dummy = token; // Not used, but captured if needed
+        }
     }
 
     KMCUDAResult result;

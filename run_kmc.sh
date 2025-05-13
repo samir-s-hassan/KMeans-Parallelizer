@@ -1,8 +1,7 @@
 #!/bin/bash
 
 # === CONFIGURATION ===
-DATASET_DIR="datasets"
-DEFAULT_DATASET="1.txt"
+DEFAULT_DATASET="datasets/1.txt"
 CSV_OUTPUT_DIR="cluster_results"
 EXECUTABLE_DIR="executables"
 OUTPUT_FILE="results.txt"
@@ -39,14 +38,14 @@ for ARG in "$@"; do
     fi
 done
 
-[ -z "$DATASET" ] && DATASET="$DATASET_DIR/$DEFAULT_DATASET" || DATASET="$DATASET_DIR/$DATASET"
+[ -z "$DATASET" ] && DATASET="$DEFAULT_DATASET"
 if [ ! -f "$DATASET" ]; then
     echo "❌ Dataset not found: $DATASET"
     exit 1
 fi
 
 # === START LOGGING ===
-echo "📊 Using dataset: $DATASET"
+# echo "📊 Using dataset: $DATASET"
 echo "Running K-Means Implementations on $DATASET" > "$OUTPUT_FILE"
 echo "" >> "$OUTPUT_FILE"
 
@@ -57,7 +56,7 @@ for IMPL in "${SELECTED_IMPLEMENTATIONS[@]}"; do
     read -r SOURCE_FILE EXECUTABLE <<< "${IMPLEMENTATIONS[$IMPL]}"
     EXECUTABLE_PATH="./$EXECUTABLE_DIR/$EXECUTABLE"
 
-    echo "🔧 Compiling $EXECUTABLE..."
+    # echo "🔧 Compiling $EXECUTABLE..."
     if [[ "$IMPL" == "k" || "$IMPL" == "r" ]]; then
         # KM-CUDA settings
         KMCUDA_DIR="kmcuda"
@@ -82,7 +81,6 @@ for IMPL in "${SELECTED_IMPLEMENTATIONS[@]}"; do
     echo "===== Running $EXECUTABLE on $DATASET =====" >> "$OUTPUT_FILE"
     cat "$DATASET" | "$EXECUTABLE_PATH" >> "$OUTPUT_FILE" 2>&1
     echo "$EXECUTABLE Execution Completed!" >> "$OUTPUT_FILE"
-    echo ""
 done
 
 # === CLEANUP ===
