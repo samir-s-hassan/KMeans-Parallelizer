@@ -1,102 +1,117 @@
-Running K-Means Implementations on datasets/6.txt
+Running K-Means Implementations on datasets/1.txt
 
-===== Running parallel on datasets/6.txt =====
-Break in iteration 33
+
+===== Running serial on datasets/1.txt =====
+Break in iteration 2
 
 Cluster 1
-Cluster values: -3.00873 51.2306 
+Cluster values: 3.9 5.1 
 
 Cluster 2
-Cluster values: -0.146137 51.5335 
+Cluster values: 1.25 1.5 
 
-Cluster 3
-Cluster values: -3.75198 55.9435 
+TOTAL EXECUTION TIME = 8
+TIME PHASE 1 = 1
+TIME PHASE 2 = 6
+SERIAL, AVERAGE TIME PER ITERATION = 3 µs
+PHASE 2 THROUGHPUT = 2.33333e+06 points per second
+PHASE 2 LATENCY = 0.428571 µs per point
+serial Execution Completed!
 
-Cluster 4
-Cluster values: -1.89436 53.3681 
+===== Running parallel on datasets/1.txt =====
+Break in iteration 2
 
-TOTAL EXECUTION TIME = 37618 µs
-TIME PHASE 1 = 6 µs
-TIME PHASE 2 = 37611 µs
-PARALLEL, AVERAGE TIME PER ITERATION = 1139.73 µs
-PHASE 2 THROUGHPUT = 3.1602e+08 points per second
-PHASE 2 LATENCY = 0.00316435 µs per point
+Cluster 1
+Cluster values: 3.9 5.1 
+
+Cluster 2
+Cluster values: 1.25 1.5 
+
+TOTAL EXECUTION TIME = 1355 µs
+TIME PHASE 1 = 2 µs
+TIME PHASE 2 = 1352 µs
+PARALLEL, AVERAGE TIME PER ITERATION = 676 µs
+PHASE 2 THROUGHPUT = 10355 points per second
+PHASE 2 LATENCY = 96.5714 µs per point
 parallel Execution Completed!
-===== Running a-parallel on datasets/6.txt =====
-Break in iteration 33
+
+===== Running a-parallel on datasets/1.txt =====
+Break in iteration 2
 
 Cluster 1
-Cluster values: -3.00873 51.2306 
+Cluster values: 3.9 5.1 
 
 Cluster 2
-Cluster values: -0.146137 51.5335 
+Cluster values: 1.25 1.5 
 
-Cluster 3
-Cluster values: -3.75198 55.9435 
-
-Cluster 4
-Cluster values: -1.89436 53.3681 
-
-TOTAL EXECUTION TIME = 69728 µs
-TIME PHASE 1 = 6 µs
-TIME PHASE 2 = 69721 µs
-A-PARALLEL, AVERAGE TIME PER ITERATION = 2112.76 µs
-PHASE 2 THROUGHPUT = 1.70477e+08 points per second
-PHASE 2 LATENCY = 0.00586589 µs per point
+TOTAL EXECUTION TIME = 166 µs
+TIME PHASE 1 = 2 µs
+TIME PHASE 2 = 164 µs
+A-PARALLEL, AVERAGE TIME PER ITERATION = 82 µs
+PHASE 2 THROUGHPUT = 85365.9 points per second
+PHASE 2 LATENCY = 11.7143 µs per point
 a-parallel Execution Completed!
-===== Running b-parallel on datasets/6.txt =====
-Break in iteration 33
+
+===== Running b-parallel on datasets/1.txt =====
+Break in iteration 2
 
 Cluster 1
-Cluster values: -3.00873 51.2306 
+Cluster values: 3.9 5.1 
 
 Cluster 2
-Cluster values: -0.146137 51.5335 
+Cluster values: 1.25 1.5 
 
-Cluster 3
-Cluster values: -3.75198 55.9435 
-
-Cluster 4
-Cluster values: -1.89436 53.3681 
-
-TOTAL EXECUTION TIME = 139482 µs
-TIME PHASE 1 = 6 µs
-TIME PHASE 2 = 139476 µs
-B-PARALLEL, AVERAGE TIME PER ITERATION = 4226.55 µs
-PHASE 2 THROUGHPUT = 8.52178e+07 points per second
-PHASE 2 LATENCY = 0.0117346 µs per point
+TOTAL EXECUTION TIME = 180 µs
+TIME PHASE 1 = 2 µs
+TIME PHASE 2 = 177 µs
+B-PARALLEL, AVERAGE TIME PER ITERATION = 88.5 µs
+PHASE 2 THROUGHPUT = 79096 points per second
+PHASE 2 LATENCY = 12.6429 µs per point
 b-parallel Execution Completed!
-===== Running kmcuda on datasets/6.txt =====
-reassignments threshold: 36
+
+===== Running kmcuda on datasets/1.txt =====
+reassignments threshold: 0
 transposing the samples...
 randomly picking initial centroids...
 done            
 too few clusters for this yinyang_t => Lloyd
-iteration 1: 360177 reassignments
-iteration 2: 49956 reassignments
-iteration 3: 22935 reassignments
-iteration 4: 15853 reassignments
-iteration 5: 7338 reassignments
-iteration 6: 753 reassignments
-iteration 7: 7 reassignments
-Break in iteration 1000
+iteration 1: 7 reassignments
+iteration 2: 1 reassignments
+iteration 3: 1 reassignments
+iteration 4: 0 reassignments
+Break in iteration 4
 
 Cluster 1
-Cluster values: -3.75963 55.9511 
+Cluster values: 3.9 5.1 
 
 Cluster 2
-Cluster values: -3.01639 51.2393 
+Cluster values: 1.25 1.5 
 
-Cluster 3
-Cluster values: -0.153015 51.5403 
-
-Cluster 4
-Cluster values: -1.9046 53.3786 
-
-TOTAL EXECUTION TIME = 540192 µs
+TOTAL EXECUTION TIME = 131011 µs
 TIME PHASE 1 = 0 µs
-TIME PHASE 2 = 540192 µs
-KMCUDA, AVERAGE TIME PER ITERATION = 540.192 µs
-PHASE 2 THROUGHPUT = 6.66757e+08 points per second
-PHASE 2 LATENCY = 0.0014998 µs per point
+TIME PHASE 2 = 131011 µs
+KMCUDA, AVERAGE TIME PER ITERATION = 32752.8 µs
+PHASE 2 THROUGHPUT = 213.723 points per second
+PHASE 2 LATENCY = 4678.96 µs per point
 kmcuda Execution Completed!
+
+===== Running draft_kmc on datasets/1.txt =====
+reassignments threshold: 0
+transposing the samples...
+randomly picking initial centroids...
+done            
+too few clusters for this yinyang_t => Lloyd
+iteration 1: 7 reassignments
+iteration 2: 1 reassignments
+iteration 3: 1 reassignments
+iteration 4: 0 reassignments
+Cluster 1
+Cluster values: 3.9 5.1 
+
+Cluster 2
+Cluster values: 1.25 1.5 
+
+TOTAL EXECUTION TIME = 66630 µs
+PHASE 2 THROUGHPUT = 10505.8 points per second
+PHASE 2 LATENCY = 95.1857 µs per point
+draft_kmc Execution Completed!

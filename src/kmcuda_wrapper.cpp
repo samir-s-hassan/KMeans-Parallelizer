@@ -3,65 +3,112 @@
 #include <string>
 #include <kmcuda.h>
 #include <chrono>
+#include <unistd.h>
+#include <fcntl.h>
+#include <cstdio>
+#include <cstring>
 
 using namespace std;
 
+// Global variables to share between main and counting function
+int total_points, total_values, K;
+unsigned long long seed;
+float tolerance = 1e-4f;
+float yinyang_t = 0.1f;
+vector<float> features;
+vector<float> centroids;
+vector<unsigned int> assignments;
+
+int count_kmcuda_iterations(KMCUDAResult &out_result)
+{
+    int pipefd[2];
+    pipe(pipefd);
+
+    // Backup stdout
+    int saved_stdout = dup(STDOUT_FILENO);
+    dup2(pipefd[1], STDOUT_FILENO); // Redirect stdout
+    close(pipefd[1]);
+
+    // Run KMCUDA
+    out_result = kmeans_cuda(
+        kmcudaInitMethodRandom,
+        nullptr,
+        tolerance,
+        yinyang_t,
+        kmcudaDistanceMetricL2,
+        total_points,
+        static_cast<uint16_t>(total_values),
+        K,
+        seed,
+        0,
+        -1,
+        0,
+        1, // verbosity
+        features.data(),
+        centroids.data(),
+        assignments.data(),
+        nullptr);
+
+    fflush(stdout);
+    dup2(saved_stdout, STDOUT_FILENO); // Restore stdout
+    close(saved_stdout);
+
+    char buffer[32768];
+    ssize_t count = read(pipefd[0], buffer, sizeof(buffer) - 1);
+    close(pipefd[0]);
+
+    buffer[count] = '\0';
+    int iterations = 0;
+
+    char *line = strtok(buffer, "\n");
+    while (line)
+    {
+        cout << line << endl; // <-- Echo back KM-CUDA's log output
+        if (strncmp(line, "iteration ", 10) == 0)
+        {
+            iterations++;
+        }
+        line = strtok(nullptr, "\n");
+    }
+
+    return iterations;
+}
+
 int main()
 {
-    int total_points, total_values, K, max_iterations, has_name;
-    std::cin >> total_points >> total_values >> K >> max_iterations >> has_name;
+    int max_iterations, has_name;
+    cin >> total_points >> total_values >> K >> max_iterations >> has_name;
 
-    std::vector<float> features(total_points * total_values);
-    std::string dummy;
+    seed = 10;
+
+    features.resize(total_points * total_values);
+    assignments.resize(total_points);
+    centroids.resize(K * total_values);
+
+    string dummy;
     for (int i = 0; i < total_points; ++i)
     {
         for (int j = 0; j < total_values; ++j)
         {
-            std::cin >> features[i * total_values + j];
+            cin >> features[i * total_values + j];
         }
         if (has_name)
-            std::cin >> dummy;
+            cin >> dummy;
     }
 
-    std::vector<unsigned int> assignments(total_points);
-    std::vector<float> centroids(K * total_values);
-
-    float tolerance = 1e-4f;
-    float yinyang_t = 0.1f;
-    unsigned long long seed = 10;
-
+    KMCUDAResult result;
     auto begin = chrono::high_resolution_clock::now();
-
-    KMCUDAResult result = kmeans_cuda(
-        kmcudaInitMethodRandom,              // Initialization method
-        nullptr,                             // init_params
-        tolerance,                           // Tolerance
-        yinyang_t,                           // Yinyang threshold
-        kmcudaDistanceMetricL2,              // Distance metric
-        total_points,                        // Number of samples
-        static_cast<uint16_t>(total_values), // Number of features
-        K,                                   // Number of clusters
-        seed,                                // Random seed
-        0,                                   // Use all available CUDA devices
-        -1,                                  // Data on host
-        0,                                   // Not using fp16x2
-        1,                                   // Verbosity
-        features.data(),                     // Input data
-        centroids.data(),                    // Output centroids
-        assignments.data(),                  // Output assignments
-        nullptr                              // Average distance (not computed)
-    );
-
+    int actual_iterations = count_kmcuda_iterations(result);
     auto end = chrono::high_resolution_clock::now();
 
     if (result != kmcudaSuccess)
     {
-        std::cerr << "KMCUDA failed with error code: " << result << std::endl;
+        cerr << "KMCUDA failed with error code: " << result << endl;
         return 1;
     }
 
-    auto total_us = chrono::duration_cast<chrono::microseconds>(end - begin).count();
-    cout << "Break in iteration " << max_iterations << "\n\n";
+    // === Print Clustering Info ===
+    cout << "Break in iteration " << actual_iterations << "\n\n";
     for (int i = 0; i < K; ++i)
     {
         cout << "Cluster " << i + 1 << "\nCluster values: ";
@@ -70,16 +117,25 @@ int main()
         cout << "\n\n";
     }
 
+    // === Print Timing Metrics ===
+    auto total_us = chrono::duration_cast<chrono::microseconds>(end - begin).count();
+
+    // You can’t split KM-CUDA into phases, but fake Phase 1 = 0
+    long long phase1_us = 0;
+    long long phase2_us = total_us;
+
+    double avg_time_per_iter = (actual_iterations > 0)
+                                   ? static_cast<double>(phase2_us) / actual_iterations
+                                   : 0.0;
+
+    double throughput = (double)(total_points * actual_iterations) / (phase2_us / 1e6);
+    double latency = (double)phase2_us / (total_points * actual_iterations);
+
+    // === Match Output Format ===
     cout << "TOTAL EXECUTION TIME = " << total_us << " µs\n";
-    cout << "TIME PHASE 1 = 0 µs\n"; // We are not splitting phases; KM-CUDA is monolithic
-    cout << "TIME PHASE 2 = " << total_us << " µs\n";
-
-    // Assume it always runs max_iterations for comparison
-    double avg_time_per_iter = static_cast<double>(total_us) / max_iterations;
+    cout << "TIME PHASE 1 = " << phase1_us << " µs\n";
+    cout << "TIME PHASE 2 = " << phase2_us << " µs\n";
     cout << "KMCUDA, AVERAGE TIME PER ITERATION = " << avg_time_per_iter << " µs\n";
-
-    double throughput = (double)(total_points * max_iterations) / (total_us / 1e6);
-    double latency = (double)total_us / (total_points * max_iterations);
     cout << "PHASE 2 THROUGHPUT = " << throughput << " points per second\n";
     cout << "PHASE 2 LATENCY = " << latency << " µs per point\n";
 
