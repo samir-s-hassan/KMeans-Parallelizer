@@ -112,3 +112,19 @@ This link is to test the km_cuda implementation, which is GPU code, against the 
 - The km_run script was specifically made to test the km_cuda implementation and therefore might not work for all the implementations. It does work perfect though for km_cuda, a-parallel, b-parallel, and parallel implementations.  
 - When using datasets/9.txt to test the km_cuda implementation, increase clusters from 4 to a greater number (e.g. 20) as this will allow kmeans++ to kick in. In general, kmeans++ will only kick in when there aren't too few amount of clusters.
 - kmcuda/ and oneapi-tbb-2022.0.0/ were downloaded from the internet. Check instructions/ to understand
+
+## License
+
+    Copyright 2025 Samir Hassan
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
