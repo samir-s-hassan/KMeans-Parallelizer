@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # === CONFIGURATION ===
-DEFAULT_DATASET="datasets/1.txt"
+DEFAULT_DATASET="datasets/drybean1.txt"
 CSV_OUTPUT_DIR="cluster_results"
 EXECUTABLE_DIR="executables"
 OUTPUT_FILE="results.txt"

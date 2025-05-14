@@ -1,24 +1,58 @@
 Running K-Means Implementations on datasets/drybean1.txt
 
-===== Running a-parallel on datasets/drybean1.txt =====
+===== Running kmcuda on datasets/drybean1.txt =====
+reassignments threshold: 1
+transposing the samples...
+randomly picking initial centroids...
+done            
+too few clusters for this yinyang_t => Lloyd
+iteration 1: 13611 reassignments
+iteration 2: 3816 reassignments
+iteration 3: 2417 reassignments
+iteration 4: 2087 reassignments
+iteration 5: 2188 reassignments
+iteration 6: 2260 reassignments
+iteration 7: 2000 reassignments
+iteration 8: 1370 reassignments
+iteration 9: 966 reassignments
+iteration 10: 731 reassignments
+iteration 11: 554 reassignments
+iteration 12: 401 reassignments
+iteration 13: 296 reassignments
+iteration 14: 243 reassignments
+iteration 15: 176 reassignments
+iteration 16: 151 reassignments
+iteration 17: 127 reassignments
+iteration 18: 90 reassignments
+iteration 19: 80 reassignments
+iteration 20: 69 reassignments
+iteration 21: 59 reassignments
+iteration 22: 40 reassignments
+iteration 23: 28 reassignments
+iteration 24: 26 reassignments
+iteration 25: 18 reassignments
+iteration 26: 7 reassignments
+iteration 27: 12 reassignments
+iteration 28: 6 reassignments
+iteration 29: 0 reassignments
 Break in iteration 29
 
 Cluster 1
-Cluster values: 173708 1586.82 593.746 374.494 1.58663 0.771054 176041 469.27 0.77667 0.986889 0.864298 0.792304 0.00344074 0.000842278 0.628665 0.99183 
+Cluster values: 50318.3 864.304 331.557 195.129 1.71547 0.789299 50988.8 253.552 0.734874 0.987 0.850242 0.769361 0.00660382 0.00145959 0.596223 0.994387 
 
 Cluster 2
-Cluster values: 34764.5 690.191 251.756 175.95 1.44128 0.700905 35163 209.799 0.757089 0.988593 0.913233 0.835824 0.0073314 0.00221723 0.700941 0.997012 
+Cluster values: 74913.1 1069.37 401.825 239.058 1.69029 0.797683 76115.1 309.647 0.751541 0.984193 0.822576 0.76937 0.00539907 0.00117284 0.593527 0.992438 
 
 Cluster 3
-Cluster values: 50319 863.565 331.553 195.128 1.71578 0.789295 50989.7 252.74 0.734839 0.987003 0.850235 0.769367 0.00660073 0.00145953 0.596225 0.994381 
+Cluster values: 34764.3 690.412 251.755 175.949 1.44097 0.700903 35162.7 210.076 0.75712 0.988593 0.913233 0.835824 0.00733134 0.00221721 0.700941 0.99701 
 
 Cluster 4
-Cluster values: 74913.4 1069.14 401.82 239.059 1.68959 0.797693 76116.4 308.364 0.751639 0.984196 0.822562 0.76938 0.00539754 0.00117276 0.593528 0.992429 
+Cluster values: 173703 1591.75 593.728 374.503 1.59062 0.771001 176034 476.098 0.758697 0.986854 0.864324 0.792315 0.00342535 0.000842294 0.628659 0.991868 
 
-TOTAL EXECUTION TIME = 18010 µs
-TIME PHASE 1 = 6 µs
-TIME PHASE 2 = 18004 µs
-A-PARALLEL, AVERAGE TIME PER ITERATION = 620.828 µs
-PHASE 2 THROUGHPUT = 2.1924e+07 points per second
-PHASE 2 LATENCY = 0.0456122 µs per point
-a-parallel Execution Completed!
+TOTAL EXECUTION TIME = 747329 µs
+TIME PHASE 1 = 0 µs
+TIME PHASE 2 = 747329 µs
+KMCUDA, AVERAGE TIME PER ITERATION = 25770 µs
+PHASE 2 THROUGHPUT = 528173 points per second
+PHASE 2 LATENCY = 1.89332 µs per point
+kmcuda Execution Completed!
