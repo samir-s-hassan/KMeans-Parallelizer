@@ -67,8 +67,6 @@ a-parallel.cpp -> This version of the K-Means clustering algorithm introduces pa
 
 b-parallel.cpp -> This version of the K-Means clustering algorithm further enhances **parallelization using Intel TBB by optimizing the centroid recalculation step (Step 2b)
 
-usion-parallel.cpp -> DOES NOT WORK, ignore this file
-
 fast-serial.cpp -> This optimized K-Means implementation improves the baseline by reducing redundant computations, using loop unrolling, avoiding unnecessary function calls, and leveraging memory optimizations  
 
 lightning-serial.cpp -> This optimized K-Means implementation enhances both performance and memory efficiency by eliminating per-cluster point storage, maintaining only centroid values, and recalculating centroids using aggregate sums
@@ -83,6 +81,8 @@ kmeans_wrapper.cpp -> This version integrates the KM-CUDA GPU-accelerated KMeans
 It reads and formats input data, invokes kmeans_cuda() to perform clustering entirely on the GPU, and intercepts the library's output using POSIX pipe() to measure the number of iterations.
 
 [ARCHIVED]kmc.cpp -> This version uses the KM-CUDA library to run KMeans clustering entirely on the GPU with minimal overhead. It reads input data, executes kmeans_cuda() with predefined parameter. Unlike the full wrapper, it does not capture iteration count or split execution into phases.
+
+usion-parallel.cpp -> DOES NOT WORK, ignore this file
 
 ## Datasets chosen
 Metadata is present on top of each .txt dataset file. The metadata was added after the dataset was downloaded.  
