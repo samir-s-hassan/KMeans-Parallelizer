@@ -67,6 +67,8 @@ a-parallel.cpp -> This version of the K-Means clustering algorithm introduces pa
 
 b-parallel.cpp -> This version of the K-Means clustering algorithm further enhances **parallelization using Intel TBB by optimizing the centroid recalculation step (Step 2b)
 
+usion-parallel.cpp -> DOES NOT WORK, ignore this file
+
 fast-serial.cpp -> This optimized K-Means implementation improves the baseline by reducing redundant computations, using loop unrolling, avoiding unnecessary function calls, and leveraging memory optimizations  
 
 lightning-serial.cpp -> This optimized K-Means implementation enhances both performance and memory efficiency by eliminating per-cluster point storage, maintaining only centroid values, and recalculating centroids using aggregate sums
