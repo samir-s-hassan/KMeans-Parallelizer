@@ -1,6 +1,6 @@
-Running K-Means Implementations on datasets/drybean1.txt
+Running K-Means Implementations on datasets/9.txt
 
-===== Running kmcuda on datasets/drybean1.txt =====
+===== Running kmcuda on datasets/9.txt =====
 reassignments threshold: 1
 transposing the samples...
 randomly picking initial centroids...
@@ -49,10 +49,10 @@ Cluster values: 34764.3 690.412 251.755 175.949 1.44097 0.700903 35162.7 210.076
 Cluster 4
 Cluster values: 173703 1591.75 593.728 374.503 1.59062 0.771001 176034 476.098 0.758697 0.986854 0.864324 0.792315 0.00342535 0.000842294 0.628659 0.991868 
 
-TOTAL EXECUTION TIME = 747329 µs
+TOTAL EXECUTION TIME = 223465 µs
 TIME PHASE 1 = 0 µs
-TIME PHASE 2 = 747329 µs
-KMCUDA, AVERAGE TIME PER ITERATION = 25770 µs
-PHASE 2 THROUGHPUT = 528173 points per second
-PHASE 2 LATENCY = 1.89332 µs per point
+TIME PHASE 2 = 223465 µs
+KMCUDA, AVERAGE TIME PER ITERATION = 7705.69 µs
+PHASE 2 THROUGHPUT = 1.76636e+06 points per second
+PHASE 2 LATENCY = 0.566137 µs per point
 kmcuda Execution Completed!
