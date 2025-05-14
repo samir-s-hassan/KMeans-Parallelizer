@@ -109,4 +109,4 @@ This link is to test the km_cuda implementation, which is GPU code, against the 
 - generate_csv.py parses a results.txt file (which contains printed K-Means clustering output), extracts cluster assignments and point features, and generates a clean CSV file per implementation (e.g., serial, b-parallel, etc.) for further analysis or visualization.
 - The km_run script was specifically made to test the km_cuda implementation and therefore might not work for all the implementations. It does work perfect though for km_cuda, a-parallel, b-parallel, and parallel implementations.  
 - When using datasets/9.txt to test the km_cuda implementation, increase clusters from 4 to a greater number (e.g. 20) as this will allow kmeans++ to kick in. In general, kmeans++ will only kick in when there aren't too few amount of clusters.
-- kmcuda/ and oneapi-tbb-2022.0.0/ were downloaded from the internet. Check the instructions/folder to understand
+- kmcuda/ and oneapi-tbb-2022.0.0/ were downloaded from the internet. Check instructions/ to understand
