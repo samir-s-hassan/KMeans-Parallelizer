@@ -1,4 +1,4 @@
-# KMeans-Parallelizer (hw2_kmeans)
+# KMeans-Parallelizer
 
 The purpose of this program is to take a sequential implementation of the K-Means clustering algorithm and optimize it for improved performance by applying parallelization techniques on the CPU. The project explores a wide range of fine-grained performance improvements including Intel Threading Building Blocks (TBB), with a focus on both scalability and computational efficiency.  
 
@@ -100,7 +100,7 @@ There are execution times and charts present at this link. We compare the averag
 
 https://docs.google.com/spreadsheets/d/1VlR9bbsMi0Q9YT6g9q1Kq0vtMYysejJe5KwZs9Vb620/edit?usp=sharing  
 
-Specifically, this link is to test the km_cuda implementation, which is GPU code, against the a-parallel and parallel implementations, which are CPU code. There are execution times and charts present at this link. We compare the execution times and average time per iteration when we vary the amount of points and amount of clusters. We also compare the throughput (points per second) and latency (microseconds per point) when we vary the amount of points and the amount of clusters. 
+This link is to test the km_cuda implementation, which is GPU code, against the a-parallel and parallel implementations, which are CPU code. There are execution times and charts present at this link. We compare the execution times and average time per iteration when we vary the amount of points and amount of clusters. We also compare the throughput (points per second) and latency (microseconds per point) when we vary the amount of points and the amount of clusters. 
 
 ## Notes
 - This was run on a Sunlab machine at Lehigh University with 16 CPUs (try 'less /proc/cpuinfo'), therefore results produced on another machine might not compare
@@ -109,3 +109,4 @@ Specifically, this link is to test the km_cuda implementation, which is GPU code
 - generate_csv.py parses a results.txt file (which contains printed K-Means clustering output), extracts cluster assignments and point features, and generates a clean CSV file per implementation (e.g., serial, b-parallel, etc.) for further analysis or visualization.
 - The km_run script was specifically made to test the km_cuda implementation and therefore might not work for all the implementations. It does work perfect though for km_cuda, a-parallel, b-parallel, and parallel implementations.  
 - When using datasets/9.txt to test the km_cuda implementation, increase clusters from 4 to a greater number (e.g. 20) as this will allow kmeans++ to kick in. In general, kmeans++ will only kick in when there aren't too few amount of clusters.
+- kmcuda/ and oneapi-tbb-2022.0.0/ were downloaded from the internet. Check the instructions/folder to understand
