@@ -4,6 +4,8 @@ The purpose of this program is to take a sequential implementation of the K-Mean
 
 There is also a comparison done between GPU code (km_cuda implementation) and my fastest parallel CPU codes (a-parallel and parallel). We test these versions on large datasets/varied datasets to see the effects of GPU cores (many lightweight threads) on the computations involved in the KMeans algorithm.
 
+This project is part of a course assignment and is not licensed for public use.
+
 ## How to run
 ./km_run.sh <implementation(s)> <dataset.txt>  
 - use only for kmcuda implementations vs parallel implementations  
