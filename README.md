@@ -94,13 +94,16 @@ Metadata is present on top of each .txt dataset file. The metadata was added aft
 See [datasets/datasets.md](datasets/datasets.md) for dataset information.
 
 ## Charts
-https://docs.google.com/spreadsheets/d/1w9QckUbBnYQO1gXstozWQDwRfLRCrpcjpW0PHK8apVI/edit?usp=sharing
+View the chart:
+1. [On Google Sheets](https://docs.google.com/spreadsheets/d/1w9QckUbBnYQO1gXstozWQDwRfLRCrpcjpW0PHK8apVI/edit?usp=sharing)  
+2. [Download File](./charts/chart1.xlsx)
 
-There are execution times and charts present at this link. We compare the average time per iteration when we vary the amount of points, amount of dimensions, and amount of clusters. We also compare the throughput (points per second) and latency (microseconds per point) when we vary the amount of dimensions and the amount of clusters.
+There are execution times and charts present at this link (if the link does not work, you can download or view the file by clicking the second option.) We compare the average time per iteration when we vary the amount of points, amount of dimensions, and amount of clusters. We also compare the throughput (points per second) and latency (microseconds per point) when we vary the amount of dimensions and the amount of clusters.
 
-https://docs.google.com/spreadsheets/d/1VlR9bbsMi0Q9YT6g9q1Kq0vtMYysejJe5KwZs9Vb620/edit?usp=sharing  
+1. [On Google Sheets](https://docs.google.com/spreadsheets/d/1VlR9bbsMi0Q9YT6g9q1Kq0vtMYysejJe5KwZs9Vb620/edit?usp=sharing  )  
+2. [Download File](./charts/chart2.xlsx)
 
-This link is to test the km_cuda implementation, which is GPU code, against the a-parallel and parallel implementations, which are CPU code. There are execution times and charts present at this link. We compare the execution times and average time per iteration when we vary the amount of points and amount of clusters. We also compare the throughput (points per second) and latency (microseconds per point) when we vary the amount of points and the amount of clusters. 
+This link is to test the km_cuda implementation, which is GPU code, against the a-parallel and parallel implementations, which are CPU code (if the link does not work, you can download or view the file by clicking the second option.) There are execution times and charts present at this link. We compare the execution times and average time per iteration when we vary the amount of points and amount of clusters. We also compare the throughput (points per second) and latency (microseconds per point) when we vary the amount of points and the amount of clusters. 
 
 ## Notes
 - This was run on a Sunlab machine at Lehigh University with 16 CPUs (try 'less /proc/cpuinfo'), therefore results produced on another machine might not compare
